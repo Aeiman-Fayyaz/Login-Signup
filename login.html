@@ -4,9 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up | Create your account</title>
-    <link rel="stylesheet" href="index.css">
+    <title>Log in</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="bootstrap.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 </head>
 
 <body>
@@ -16,23 +17,34 @@
         <h1 class="text-light">Login</h1>
         <form>
             <div class="input-username">
-                <input type="text" placeholder="Email" id="email">
+                <input type="text" placeholder="Email" id="loginEmail">
             </div>
             <div class="input-password">
-                <input type="password" placeholder="Password" id="password">
+                <input type="password" placeholder="Password" id="loginPassword">
             </div>
             <div class="button">
                 <button class="btn text-uppercase fw-bolder" type="button" id="loginBtn">Login</button>
             </div>
             <div class="login-link" class="mb-0">
                 <p class="fs-6">Don't Have an account?</p>
-                <a href="index.html"  class="text-decoration-none fs-6">Sign up</a>
+                <a href="index.html" class="text-decoration-none fs-6">Sign up</a>
             </div>
             <div class="button">
                 <button class="btn fw-bolder" type="button" id="google-btn">Login with Google</button>
             </div>
+            <div class="main">
+                <div id="loader"></div>
+            </div>
         </form>
     </div>
+
+
+
+
+    <!-- Supabase Javascript -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Our JS -->
+    <script src="app.js"></script>
 </body>
 
 </html>
