@@ -6,28 +6,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="bootstrap.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
+    <!-- Signup or Create account -->
     <div class="container">
-        <h1>Login</h1>
-        <form>
-            <div class="input-username">
-                <input type="text" placeholder="Email" id="email">
-            </div>
-            <div class="input-password">
-                <input type="password" placeholder="Password" id="password">
-            </div>
-            <div class="button">
-                <button class="btn" type="button" id="btn">Login</button>
-            </div>
-            <p>Don't Have an account? <a href="signup.html" style="color: blue;">Sign up</a></p>
-            <div class="button">
-                <button class="btn" type="button" id="google-btn">Login with Google</button>
-            </div>
+            <h1>Create Account</h1>
+            <h5>OR</h5>
+            <h1>Sign up</h1>
+        <form id="signupForm">
+            <form>
+                <div class="input-username">
+                    <input type="text" placeholder="Email" id="email">
+                </div>
+                <div class="input-password">
+                    <input type="password" placeholder="Password" id="password">
+                </div>
+                <div class="button text-uppercase">
+                    <button class="btn text-uppercase fw-bolder" type="button" id="btn">Sign up</button>
+                </div>
+                <div class="login-link" class="mb-0">
+                    <p class="fs-6">Already have an account? </p>
+                    <a href="./login.html" class="text-decoration-none fs-6">Log in</a>
+                </div>
+                <div class="button">
+                    <button class="btn fw-bolder" type="button" id="google-btn">Login with Google</button>
+                </div>
+            </form>
         </form>
+        <div class="main">
+            <div id="loader"></div>
+        </div>
     </div>
+
 
 
     <!-- Supabase Javascript -->
