@@ -53,7 +53,14 @@ signUpBtn &&
   signUpBtn.addEventListener("click", async () => {
     const userSignupEmail = document.getElementById("signupEmail");
     const userSignupPassword = document.getElementById("signupPassword");
-    if (userSignupEmail && userSignupPassword) {
+    if (!userSignupEmail || !userSignupPassword) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Please fill all fields",
+      });
+      return;
+    }
       try {
         const loader = document.getElementById("loader");
         loader.style.display = "block";
@@ -65,19 +72,41 @@ signUpBtn &&
         console.log(data);
         // navigate to login page
         // window.location.href = "index.html";
+        if(error) throw error ;
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Account Created",
+        }).then(()=>{
+          window.location.href = "login.html"
+        });
+        console.log("Signup data:", data);
       } catch (error) {
         console.error("signp error:", error);
-        if (error.message.includes("invalid format")) {
-          alert("please give us the right format of email address");
+        loader.style.display = "none"
+        if(error.message.includes("invalid format")){
+          Swal.fire({
+            icon: "error",
+            title: "Invalid Email",
+            text: "Please enter a valid email address",
+          });
+        }
+        else if(error.message.includes("user already registered")||("already exists") ||("User already registered")){
+          Swal.fire({
+            icon: "error",
+            title: "Email Exists",
+            text: "This email is already registered",
+          });
+        }
+        else {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Please Filled all these fields",
+          });
         }
       }
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Please Filled all these fields",
-      });
-    }
+
   });
 
 // Login or Already have account
@@ -87,28 +116,45 @@ loginBtn &&
   loginBtn.addEventListener("click", async () => {
     const userLoginEmail = document.getElementById("loginEmail");
     const userLoginPassword = document.getElementById("loginPassword");
-
+    if (!userLoginEmail || !userLoginPassword) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Please fill all fields",
+      });
+      return;
+    }
     if (userLoginEmail && userLoginPassword) {
       try {
-        // const loader = document.getElementById("loader");
-        // loader.style.display = "block";
+        const loader = document.getElementById("loader");
+        loader.style.display = "block";
         const { data, error } = await client.auth.signInWithPassword({
           email: userLoginEmail.value,
           password: userLoginPassword.value,
         });
-        // loader.style.display = "none";
-        if (data) window.location.href = "post.html";
+        loader.style.display = "none";
         if (error) throw error;
+        if (data && data.user) window.location.href = "post.html";
       } catch (error) {
         console.error("Login Error:", error);
-        if (error.message.includes("invalid format")) {
+        if (error.message.includes("Invalid user credentials")) {
           Swal.fire({
             icon: "error",
-            title: "Oops...",
-            text: "please give us the right format of email address",
+            title: "Login failed",
+            text: "Wrong email or password. Please try again.",
+          });
+        } else if (error.message.includes("invalid format")) {
+          Swal.fire({
+            icon: "error",
+            title: "Invalid Email",
+            text: "Please enter a valid email address.",
           });
         } else {
-          alert("Filled all fields");
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Login failed. Please try again.",
+          });
         }
       }
     }
