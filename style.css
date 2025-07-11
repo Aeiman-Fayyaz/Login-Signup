@@ -73,9 +73,10 @@ select:focus {
     background: linear-gradient(to left,
             purple,
             aqua);
-    color: white;
+    color: white !important;
     border: none !important;
     border-radius: 5px;
+    font-size: 20px !important;
     cursor: pointer;
 }
 
@@ -93,7 +94,7 @@ select:focus {
 
 h1,
 h5 {
-    color: #4a6bff !important;
+    color: #e0e0e0 !important;
 }
 
 p {
