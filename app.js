@@ -200,7 +200,7 @@ if (githubBtn) {
 const facebookBtn = document.getElementById("facebook-btn");
 if (facebookBtn) {
   facebookBtn.addEventListener("click", async function signInWithFacebook() {
-    await client.auth.signInWithOAuth({
+    await supabase.auth.signInWithOAuth({
       provider: "facebook",
       options: {
         redirectTo: window.location.origin + "/post.html",
