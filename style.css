@@ -71,8 +71,8 @@ select:focus {
 .btn {
     width: 100%;
     background: linear-gradient(to left,
-            purple,
-            aqua);
+            rgba(119, 50, 119, 0.795),
+            rgba(0, 255, 255, 0.425));
     color: white !important;
     border: none !important;
     border-radius: 5px;

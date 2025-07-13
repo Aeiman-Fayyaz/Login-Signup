@@ -92,9 +92,9 @@ h1 {
 .btn {
     border: none !important;
     background: linear-gradient(to left,
-            rgb(185, 43, 185),
-            rgb(79, 219, 219));
-    color: antiquewhite !important;
+            rgba(119, 50, 119, 0.795),
+            rgba(0, 255, 255, 0.425));
+    color: black !important;
     font-size: 20px !important;
 }
 
@@ -108,8 +108,8 @@ h1 {
 .btn-close {
     border: none !important;
     background: linear-gradient(to left,
-            rgb(185, 43, 185),
-            rgb(79, 219, 219));
+            rgba(119, 50, 119, 0.795),
+            rgba(0, 255, 255, 0.425));
     color: antiquewhite !important;
 }
 

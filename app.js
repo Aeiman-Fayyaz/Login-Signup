@@ -15,16 +15,23 @@ async function userDisplay() {
     } = await client.auth.getUser();
     if (error) throw error;
     if (user) {
-      // Getting profile image
-      if (document.getElementById("profile-avatar")) {
-        document.getElementById("profile-avatar").src =
-          user.raw_user_meta_data?.avatar_URL ||
-          user.meta_data?.profile_URL ||
-          "https://www.gravatar.com/avatar/?d=mp";
-        document.getElementById("userName").textContent =
-          user.meta_data?.full_name || user.email;
-        document.getElementById("userEmail").textContent = user.email;
+      const profileAvatar = document.getElementById("profile-avatar");
+      const userName = document.getElementById("userName");
+      const userEmail = document.getElementById("userEmail");
+
+      if (profileAvatar) {
+        profileAvatar.src =
+          user.user_metadata?.avatar_url ||
+          "https://www.gravatar.com/avatar/?d=mp" ||
+          "https://play-lh.googleusercontent.com/7Ak4Ye7wNUtheIvSKnVgGL_OIZWjGPZNV6TP_3XLxHC-sDHLSE45aDg41dFNmL5COA";
       }
+      if (userName) {
+        userName.textContent = user.user_metadata?.full_name || user.email;
+      }
+      if (userEmail) {
+        userEmail.textContent = user.email;
+      }
+
       if (window.location.pathname.includes("index.html")) {
         window.location.href = "post.html";
       }
@@ -35,7 +42,7 @@ async function userDisplay() {
       window.location.href = "index.html";
     }
   } catch (error) {
-    console.log("Error:", error);
+    console.error("Error in userDisplay:", error);
     if (
       !window.location.pathname.includes("index.html") &&
       !window.location.pathname.includes("login.html")
@@ -61,52 +68,53 @@ signUpBtn &&
       });
       return;
     }
-      try {
-        const loader = document.getElementById("loader");
-        loader.style.display = "block";
-        const { data, error } = await client.auth.signUp({
-          email: userSignupEmail.value,
-          password: userSignupPassword.value,
-        });
-        loader.style.display = "none";
-        console.log(data);
-        // navigate to login page
-        // window.location.href = "index.html";
-        if(error) throw error ;
+    try {
+      const loader = document.getElementById("loader");
+      loader.style.display = "block";
+      const { data, error } = await client.auth.signUp({
+        email: userSignupEmail.value,
+        password: userSignupPassword.value,
+      });
+      loader.style.display = "none";
+      console.log(data);
+      // navigate to login page
+      // window.location.href = "index.html";
+      if (error) throw error;
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "Account Created",
+      }).then(() => {
+        window.location.href = "login.html";
+      });
+      console.log("Signup data:", data);
+    } catch (error) {
+      console.error("signp error:", error);
+      loader.style.display = "none";
+      if (error.message.includes("invalid format")) {
         Swal.fire({
-          icon: "success",
-          title: "Success!",
-          text: "Account Created",
-        }).then(()=>{
-          window.location.href = "login.html"
+          icon: "error",
+          title: "Wrong Credentials",
+          text: "Enter correct email or password",
         });
-        console.log("Signup data:", data);
-      } catch (error) {
-        console.error("signp error:", error);
-        loader.style.display = "none"
-        if(error.message.includes("invalid format")){
-          Swal.fire({
-            icon: "error",
-            title: "Wrong Credentials",
-            text: "Enter correct email or password",
-          });
-        }
-        else if(error.message.includes("user already registered")||("already exists") ||("User already registered")){
-          Swal.fire({
-            icon: "error",
-            title: "Email Exists",
-            text: "This email is already registered",
-          });
-        }
-        else {
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "Please Filled all these fields",
-          });
-        }
+      } else if (
+        error.message.includes("user already registered") ||
+        "already exists" ||
+        "User already registered"
+      ) {
+        Swal.fire({
+          icon: "error",
+          title: "Email Exists",
+          text: "This email is already registered",
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Please Filled all these fields",
+        });
       }
-
+    }
   });
 
 // Login or Already have account
@@ -160,36 +168,70 @@ loginBtn &&
     }
   });
 
-// Google Button
+// Google OAuth
 const googleBtn = document.getElementById("google-btn");
-googleBtn &&
-  googleBtn.addEventListener("click", async (e) => {
-    const data = await client.auth.signInWithOAuth({
+if (googleBtn) {
+  googleBtn.addEventListener("click", async () => {
+    await client.auth.signInWithOAuth({
       provider: "google",
+      options: {
+        redirectTo: window.location.origin + "/post.html",
+        queryParams: { access_type: "offline", prompt: "consent" },
+      },
     });
-    console.log(data);
   });
+}
 
+// Github Aouth
+const githubBtn = document.getElementById("github-btn");
+if (githubBtn) {
+  githubBtn.addEventListener("click", async function signInWithGithub() {
+    await client.auth.signInWithOAuth({
+      provider: "github",
+      options: {
+        redirectTo: window.location.origin + "/post.html",
+        queryParams: { access_type: "offline", prompt: "consent" },
+      },
+    });
+  });
+}
+
+// Facebook OAuth
+const facebookBtn = document.getElementById("facebook-btn");
+if (facebookBtn) {
+  facebookBtn.addEventListener("click", async function signInWithFacebook() {
+    await client.auth.signInWithOAuth({
+      provider: "facebook",
+      options: {
+        redirectTo: window.location.origin + "/post.html",
+        queryParams: { access_type: "offline", prompt: "consent" },
+      },
+    });
+  });
+}
 // Account Log out
 const logoutBtn = document.getElementById("logoutBtn");
-logoutBtn &&
-  logoutBtn.addEventListener("click", async (e) => {
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", async () => {
     try {
-      const data = await client.auth.signOut();
-      if (error) throw error;
+      await client.auth.signOut();
       window.location.href = "index.html";
     } catch (error) {
-      console.error("logout error:", error);
-      alert("logout failed");
+      console.error("Logout error:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Logout Failed",
+        text: "Please try again",
+      });
     }
   });
-
+}
 // Post App
 
 let posts = [];
 let currentLocation = null;
 
-// Date in post 
+// Date in post
 function formatDate(isoString) {
   let date = new Date(isoString);
   return (
@@ -233,7 +275,8 @@ function renderPosts() {
   postsFeed.innerHTML = "";
 
   if (posts.length === 0) {
-    postsFeed.innerHTML = '<p class="text-light text-center">No posts yet. Create your first post!</p>';
+    postsFeed.innerHTML =
+      '<p class="text-light text-center">No posts yet. Create your first post!</p>';
     return;
   }
 
@@ -270,11 +313,11 @@ function renderPosts() {
 
 // Post save in local storage
 function savePostsToStorage() {
-  localStorage.setItem('socialMediaPosts', JSON.stringify(posts));
+  localStorage.setItem("socialMediaPosts", JSON.stringify(posts));
 }
 
 function loadPostsFromStorage() {
-  const savedPosts = localStorage.getItem('socialMediaPosts');
+  const savedPosts = localStorage.getItem("socialMediaPosts");
   if (savedPosts) {
     posts = JSON.parse(savedPosts);
   }
@@ -286,10 +329,10 @@ function createPost() {
   let content = document.getElementById("postContent").value.trim();
   if (!content) {
     Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: 'Post content cannot be empty!',
-      confirmButtonColor: '#3085d6',
+      icon: "error",
+      title: "Oops...",
+      text: "Post content cannot be empty!",
+      confirmButtonColor: "#3085d6",
     });
     return;
   }
@@ -325,13 +368,13 @@ function createPost() {
   savePostsToStorage();
   renderPosts();
   resetForm();
-  
+
   Swal.fire({
-    position: 'top-end',
-    icon: 'success',
-    title: 'Post created successfully!',
+    position: "top-end",
+    icon: "success",
+    title: "Post created successfully!",
     showConfirmButton: false,
-    timer: 1500
+    timer: 1500,
   });
 }
 
@@ -340,18 +383,18 @@ function updatePost() {
   let postId = parseInt(document.getElementById("editPostId").value);
   let newContent = document.getElementById("editPostContent").value.trim();
 
-  let postIndex = posts.findIndex(post => post.id === postId);
+  let postIndex = posts.findIndex((post) => post.id === postId);
   if (postIndex !== -1) {
     posts[postIndex].content = newContent;
     savePostsToStorage();
     renderPosts();
-    
+
     Swal.fire({
-      position: 'top-end',
-      icon: 'success',
-      title: 'Post updated!',
+      position: "top-end",
+      icon: "success",
+      title: "Post updated!",
       showConfirmButton: false,
-      timer: 1500
+      timer: 1500,
     });
   }
 
@@ -361,24 +404,24 @@ function updatePost() {
 // Delete post
 function deletePost(postId) {
   Swal.fire({
-    title: 'Are you sure?',
+    title: "Are you sure?",
     text: "You won't be able to revert this!",
-    icon: 'warning',
+    icon: "warning",
     showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Yes, delete it!'
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!",
   }).then((result) => {
     if (result.isConfirmed) {
-      posts = posts.filter(post => post.id !== postId);
+      posts = posts.filter((post) => post.id !== postId);
       savePostsToStorage();
       renderPosts();
-      Swal.fire('Deleted!', 'Your post has been deleted.', 'success');
+      Swal.fire("Deleted!", "Your post has been deleted.", "success");
     }
   });
 }
 
-// Media 
+// Media
 function previewMedia(input, type) {
   let mediaPreview = document.getElementById("mediaPreview");
   mediaPreview.innerHTML = "";
@@ -387,22 +430,20 @@ function previewMedia(input, type) {
     let file = input.files[0];
     let reader = new FileReader();
 
-    reader.onload = function(e) {
+    reader.onload = function (e) {
       if (type === "image") {
         let img = document.createElement("img");
         img.src = e.target.result;
         img.style.maxWidth = "100%";
         img.style.maxHeight = "200px";
         mediaPreview.appendChild(img);
-      } 
-      else if (type === "video") {
+      } else if (type === "video") {
         let video = document.createElement("video");
         video.src = e.target.result;
         video.controls = true;
         video.style.maxWidth = "100%";
         mediaPreview.appendChild(video);
-      }
-      else if (type === "file") {
+      } else if (type === "file") {
         let fileElement = document.createElement("div");
         fileElement.className = "uploaded-file";
         fileElement.setAttribute("data-filename", file.name);
@@ -418,14 +459,16 @@ function getLocation() {
   let locationPreview = document.getElementById("locationPreview");
 
   if (!navigator.geolocation) {
-    locationPreview.innerHTML = '<div class="text-danger">Geolocation not supported</div>';
+    locationPreview.innerHTML =
+      '<div class="text-danger">Geolocation not supported</div>';
     return;
   }
 
-  locationPreview.innerHTML = '<div class="text-muted">Getting location...</div>';
+  locationPreview.innerHTML =
+    '<div class="text-muted">Getting location...</div>';
 
   navigator.geolocation.getCurrentPosition(
-    position => {
+    (position) => {
       currentLocation = {
         lat: position.coords.latitude,
         lng: position.coords.longitude,
@@ -437,15 +480,16 @@ function getLocation() {
         </div>
       `;
     },
-    error => {
-      locationPreview.innerHTML = '<div class="text-danger">Location access denied</div>';
+    (error) => {
+      locationPreview.innerHTML =
+        '<div class="text-danger">Location access denied</div>';
       console.error("Geolocation error:", error);
     }
   );
 }
 
 function openEditPost(postId) {
-  let post = posts.find(p => p.id === postId);
+  let post = posts.find((p) => p.id === postId);
   if (post) {
     document.getElementById("editPostId").value = post.id;
     document.getElementById("editPostContent").value = post.content;
@@ -454,29 +498,35 @@ function openEditPost(postId) {
 }
 
 // ========== INITIALIZATION ==========
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   // Load existing posts
   loadPostsFromStorage();
 
   // Form submission handlers
-  document.getElementById("postForm").addEventListener("submit", function(e) {
+  document.getElementById("postForm").addEventListener("submit", function (e) {
     e.preventDefault();
     createPost();
   });
 
-  document.getElementById("editPostForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-    updatePost();
-  });
+  document
+    .getElementById("editPostForm")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
+      updatePost();
+    });
 
   // Media upload handlers
-  document.getElementById("imageUpload").addEventListener("change", function() {
-    previewMedia(this, "image");
-  });
-  document.getElementById("videoUpload").addEventListener("change", function() {
-    previewMedia(this, "video");
-  });
-  document.getElementById("fileUpload").addEventListener("change", function() {
+  document
+    .getElementById("imageUpload")
+    .addEventListener("change", function () {
+      previewMedia(this, "image");
+    });
+  document
+    .getElementById("videoUpload")
+    .addEventListener("change", function () {
+      previewMedia(this, "video");
+    });
+  document.getElementById("fileUpload").addEventListener("change", function () {
     previewMedia(this, "file");
   });
 });
