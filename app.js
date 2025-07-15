@@ -199,15 +199,20 @@ if (githubBtn) {
 // Facebook OAuth
 const facebookBtn = document.getElementById("facebook-btn");
 if (facebookBtn) {
-  facebookBtn.addEventListener("click", async function signInWithFacebook() {
-    await supabase.auth.signInWithOAuth({
-      provider: "facebook",
-      options: {
-        redirectTo: window.location.origin + "/post.html",
-        queryParams: { access_type: "offline", prompt: "consent" },
-      },
-    });
-  });
+  facebookBtn.addEventListener("click", async function signInWithFacebook (){
+    try {
+      const {error} = await client.auth.signInWithOAuth({
+        provider: 'facebook',
+        options:{
+          redirectTo: window.location.origin + "/post.html",
+          queryParams: { access_type: "offline", prompt: "consent"}
+        },
+      });
+      if(error) throw error
+    } catch(error){
+      console.log("login error" , error.message);
+    }
+  })
 }
 // Account Log out
 const logoutBtn = document.getElementById("logoutBtn");
