@@ -182,13 +182,26 @@ loginBtn &&
 const googleBtn = document.getElementById("google-btn");
 if (googleBtn) {
   googleBtn.addEventListener("click", async () => {
-    await client.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: window.location.origin + "/post.html",
-        queryParams: { access_type: "offline", prompt: "consent" },
-      },
-    });
+    try {
+      const { data, error } = await client.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: window.location.origin + "/post.html",
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent",
+          },
+        },
+      });
+      if (error) throw error;
+    } catch (err) {
+      console.error("Google login error:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Login Failed",
+        text: "Couldn't connect with Google",
+      });
+    }
   });
 }
 
@@ -262,11 +275,11 @@ if (logoutBtn) {
     try {
       const { error } = await client.auth.signOut();
       if (error) throw error;
-      
+
       // Force clear any remaining session data
-      localStorage.removeItem('sb-' + supabaseUrl + '-auth-token');
-      sessionStorage.removeItem('sb-' + supabaseUrl + '-auth-token');
-      
+      localStorage.removeItem("sb-" + supabaseUrl + "-auth-token");
+      sessionStorage.removeItem("sb-" + supabaseUrl + "-auth-token");
+
       // Redirect after ensuring logout is complete
       setTimeout(() => {
         window.location.href = "index.html";
