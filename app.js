@@ -207,22 +207,6 @@ if (googleBtn) {
 
 // Github Aouth
 const githubBtn = document.getElementById("github-btn");
-// if (githubBtn) {
-//   githubBtn.addEventListener("click", async function signInWithGithub() {
-//     await client.auth.signInWithOAuth({
-//       provider: "github",
-//       options: {
-//         redirectTo: window.location.origin + "/post.html",
-//         queryParams: { access_type: "offline", prompt: "consent" },
-//       },
-//     });
-//   });
-//   const {
-//     data: { user },
-//   } = await client.auth.getUser();
-//   console.log("user data", user);
-// }
-
 if (githubBtn) {
   githubBtn.addEventListener("click", async function signInWithGithub() {
     try {
@@ -230,7 +214,7 @@ if (githubBtn) {
       const { data, error } = await client.auth.signInWithOAuth({
         provider: "github",
         options: {
-          redirectTo: window.location.origin + "/post.html",
+          redirectTo: "https://aeiman-fayyaz.github.io/Login-Signup/post.html",
           queryParams: {
             access_type: "offline",
             prompt: "consent",
