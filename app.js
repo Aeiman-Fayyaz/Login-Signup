@@ -6,6 +6,12 @@ const { createClient } = supabase;
 const client = createClient(supabaseUrl, supabaseKey);
 console.log(createClient);
 
+client.auth.onAuthStateChange((event) => {
+  if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
+    userDisplay();
+  }
+});
+
 // Display a user
 async function userDisplay() {
   try {
@@ -143,6 +149,10 @@ loginBtn &&
         loader.style.display = "none";
         if (error) throw error;
         if (data && data.user) window.location.href = "post.html";
+        if (data && data.user) {
+          await userDisplay();
+          window.location.href = "post.html";
+        }
       } catch (error) {
         console.error("Login Error:", error);
         if (error.message.includes("Invalid user credentials")) {
@@ -184,43 +194,83 @@ if (googleBtn) {
 
 // Github Aouth
 const githubBtn = document.getElementById("github-btn");
+// if (githubBtn) {
+//   githubBtn.addEventListener("click", async function signInWithGithub() {
+//     await client.auth.signInWithOAuth({
+//       provider: "github",
+//       options: {
+//         redirectTo: window.location.origin + "/post.html",
+//         queryParams: { access_type: "offline", prompt: "consent" },
+//       },
+//     });
+//   });
+//   const {
+//     data: { user },
+//   } = await client.auth.getUser();
+//   console.log("user data", user);
+// }
+
 if (githubBtn) {
   githubBtn.addEventListener("click", async function signInWithGithub() {
-    await client.auth.signInWithOAuth({
-      provider: "github",
-      options: {
-        redirectTo: window.location.origin + "/post.html",
-        queryParams: { access_type: "offline", prompt: "consent" },
-      },
-    });
-  });
-}
+    try {
+      // Sign in with GitHub
+      const { data, error } = await client.auth.signInWithOAuth({
+        provider: "github",
+        options: {
+          redirectTo: window.location.origin + "/post.html",
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent",
+          },
+        },
+      });
 
+      // After successful sign-in, get user data
+      const {
+        data: { user },
+      } = await client.auth.getUser();
+      console.log("User data:", user);
+    } catch (err) {
+      console.error("Error during GitHub login:", err);
+    }
+  });
+  // document.addEventListener('DOMContentLoaded', userDisplay);
+  // client.auth.onAuthStateChange(() => userDisplay());
+}
 // Facebook OAuth
 const facebookBtn = document.getElementById("facebook-btn");
 if (facebookBtn) {
-  facebookBtn.addEventListener("click", async function signInWithFacebook (){
+  facebookBtn.addEventListener("click", async function signInWithFacebook() {
     try {
-      const {error} = await client.auth.signInWithOAuth({
-        provider: 'facebook',
-        options:{
+      const { error } = await client.auth.signInWithOAuth({
+        provider: "facebook",
+        options: {
           redirectTo: window.location.origin + "/post.html",
-          queryParams: { access_type: "offline", prompt: "consent"}
+          queryParams: { access_type: "offline", prompt: "consent" },
         },
       });
-      if(error) throw error
-    } catch(error){
-      console.log("login error" , error.message);
+      if (error) throw error;
+    } catch (error) {
+      console.log("login error", error.message);
     }
-  })
+  });
 }
 // Account Log out
 const logoutBtn = document.getElementById("logoutBtn");
 if (logoutBtn) {
   logoutBtn.addEventListener("click", async () => {
     try {
-      await client.auth.signOut();
-      window.location.href = "index.html";
+      const { error } = await client.auth.signOut();
+      if (error) throw error;
+      
+      // Force clear any remaining session data
+      localStorage.removeItem('sb-' + supabaseUrl + '-auth-token');
+      sessionStorage.removeItem('sb-' + supabaseUrl + '-auth-token');
+      
+      // Redirect after ensuring logout is complete
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 300); // Small delay to ensure cleanup
     } catch (error) {
       console.error("Logout error:", error);
       Swal.fire({
@@ -231,6 +281,7 @@ if (logoutBtn) {
     }
   });
 }
+
 // Post App
 
 let posts = [];
