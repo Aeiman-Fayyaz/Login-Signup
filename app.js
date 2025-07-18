@@ -378,57 +378,53 @@ function loadPostsFromStorage() {
 }
 
 // POst Creation
-function createPost() {
-  let content = document.getElementById("postContent").value.trim();
-  if (!content) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: "Post content cannot be empty!",
-      confirmButtonColor: "#3085d6",
-    });
-    return;
-  }
+async function createPost() {
+  try {
 
-  let mediaPreview = document.getElementById("mediaPreview");
-  let mediaType = null;
-  let mediaUrl = null;
 
-  if (mediaPreview.children.length > 0) {
-    let mediaElement = mediaPreview.firstChild;
-    if (mediaElement.tagName === "IMG") {
-      mediaType = "image";
-      mediaUrl = mediaElement.src;
-    } else if (mediaElement.tagName === "VIDEO") {
-      mediaType = "video";
-      mediaUrl = mediaElement.src;
-    } else if (mediaElement.classList.contains("uploaded-file")) {
-      mediaType = "file";
-      mediaUrl = mediaElement.getAttribute("data-filename");
+
+    if (!content) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Post content cannot be empty!",
+        confirmButtonColor: "#3085d6",
+      });
+      return;
     }
+
+    else {
+      let content = document.getElementById("postContent").value.trim();
+
+      const { data: { user: { id: userUID } } } = await client.auth.getUser()
+
+
+      const { error } = await client
+        .from('Post')
+        .insert({ uid: userUID, description: content })
+    }
+
+    if (error) {
+      console.log(error)
+    }
+    else {
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Post created successfully!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
+
+
+
+
+
   }
-
-  let newPost = {
-    id: Date.now(),
-    content: content,
-    mediaType: mediaType,
-    mediaUrl: mediaUrl,
-    location: currentLocation,
-    createdAt: new Date().toISOString(),
-  };
-
-  posts.unshift(newPost);
-  savePostsToStorage();
-  renderPosts();
-  resetForm();
-
-  Swal.fire({
-    position: "top-end",
-    icon: "success",
-    title: "Post created successfully!",
-    showConfirmButton: false,
-    timer: 1500,
-  });
+  catch (error) {
+    console.log(error)
+  }
 }
 
 // Update post
