@@ -186,7 +186,7 @@ if (googleBtn) {
       const { data, error } = await client.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: "https://aeiman-fayyaz.github.io/Login-Signup/post.html",
+          redirectTo: window.location.origin + "/post.html",
           queryParams: {
             access_type: "offline",
             prompt: "consent",
@@ -214,7 +214,8 @@ if (githubBtn) {
       const { data, error } = await client.auth.signInWithOAuth({
         provider: "github",
         options: {
-          redirectTo: "https://aeiman-fayyaz.github.io/Login-Signup/post.html",
+
+          redirectTo: window.location.origin + "/post.html",
           queryParams: {
             access_type: "offline",
             prompt: "consent",
@@ -340,13 +341,12 @@ function renderPosts() {
       <div class="card-body">
         <p class="card-text">${post.content}</p>
         ${renderPostMedia(post)}
-        ${
-          post.location
-            ? `<div class="location-badge mt-2">
+        ${post.location
+        ? `<div class="location-badge mt-2">
                 <i class="bi bi-geo-alt"></i> ${post.location.name}
               </div>`
-            : ""
-        }
+        : ""
+      }
         <div class="text-muted small mt-2">
           ${formatDate(post.createdAt)}
         </div>
