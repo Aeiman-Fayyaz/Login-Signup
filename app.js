@@ -348,13 +348,12 @@ function renderPosts() {
       <div class="card-body">
         <p class="card-text">${post.content}</p>
         ${renderPostMedia(post)}
-        ${
-          post.location
-            ? `<div class="location-badge mt-2">
+        ${post.location
+        ? `<div class="location-badge mt-2">
                 <i class="bi bi-geo-alt"></i> ${post.location.name}
               </div>`
-            : ""
-        }
+        : ""
+      }
         <div class="text-muted small mt-2">
           ${formatDate(post.createdAt)}
         </div>
@@ -424,20 +423,13 @@ submitPost &&
 // Post Creation
 function createPost() {
   let content = document.getElementById("postContent").value.trim();
-  if (!content) {
-    Swal.fire({
-      icon: "error",
-      title: "Oops...",
-      text: "Post content cannot be empty!",
-      confirmButtonColor: "#3085d6",
-    });
-    return;
-  }
+  if (!content) return;
 
   let mediaPreview = document.getElementById("mediaPreview");
   let mediaType = null;
   let mediaUrl = null;
 
+  // Check if there's media to upload
   if (mediaPreview.children.length > 0) {
     let mediaElement = mediaPreview.firstChild;
     if (mediaElement.tagName === "IMG") {
@@ -461,20 +453,10 @@ function createPost() {
     createdAt: new Date().toISOString(),
   };
 
-  posts.unshift(newPost);
-  savePostsToStorage();
+  posts.unshift(newPost); 
   renderPosts();
   resetForm();
-
-  Swal.fire({
-    position: "top-end",
-    icon: "success",
-    title: "Post created successfully!",
-    showConfirmButton: false,
-    timer: 1500,
-  });
 }
-
 // Update post
 function updatePost() {
   let postId = parseInt(document.getElementById("editPostId").value);
