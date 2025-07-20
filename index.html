@@ -8,14 +8,17 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="bootstrap.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
     <!-- Signup or Create account -->
     <div class="container">
-            <h1>Create Account</h1>
-            <h5>OR</h5>
-            <h1>Sign up</h1>
+        <h1>Create Account</h1>
+        <h5>OR</h5>
+        <h1>Sign up</h1>
         <form id="signupForm">
             <form>
                 <div class="input-username">
@@ -23,6 +26,11 @@
                 </div>
                 <div class="input-password">
                     <input type="password" placeholder="Password" id="signupPassword">
+                    <button style="position: absolute; margin-left: -30px; border: none; margin-top: 5px;" id="togglePassword">
+                        <i class="fa-solid fa-eye " id="eyeIcon"></i>
+                    </button>
+                </div>
+                <div>
                     <p class="text-start mt-2">Password must have 6 characters</p>
                 </div>
                 <div class="button text-uppercase">
@@ -33,12 +41,11 @@
                     <a href="./login.html" class="text-decoration-none fs-6">Log in</a>
                 </div>
                 <div class="button">
-                    <button class="btn w-25 h-25 fw-bolder" type="button" id="google-btn">
+                    <button type="button" class="btn w-25 h-25 fw-bolder" type="button" id="google-btn">
                         <img src="./Images/google_logo.png" class="w-25 h-25" alt="">
-                    <button class="btn w-25 h-25 fw-bolder ms-3" type="button" id="github-btn">
-                        <img src="./Images/github-logo.png" class="w-25 h-25" alt="">
-                    </button>
-                    
+                        <button class="btn w-25 h-25 fw-bolder ms-3" type="button" id="github-btn">
+                            <img src="./Images/github-logo.png" class="w-25 h-25" alt="">
+                        </button>
                 </div>
             </form>
         </form>

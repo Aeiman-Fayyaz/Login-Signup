@@ -49,6 +49,7 @@ async function userDisplay() {
     }
   } catch (error) {
     console.error("Error in userDisplay:", error);
+    await client.auth.getUser();
     if (
       !window.location.pathname.includes("index.html") &&
       !window.location.pathname.includes("login.html")
@@ -83,8 +84,6 @@ signUpBtn &&
       });
       loader.style.display = "none";
       console.log(data);
-      // navigate to login page
-      // window.location.href = "index.html";
       if (error) throw error;
       Swal.fire({
         icon: "success",
@@ -178,6 +177,27 @@ loginBtn &&
     }
   });
 
+// Password hide / Show
+
+const inputPassword = document.getElementById("signupPassword");
+const eyeIcon = document.getElementById("eyeIcon");
+// const togglePassword = document.getElementById("toggle-password");
+document.addEventListener("DOMContentLoaded", function () {
+  const togglePassword = document.querySelector("#togglePassword");
+  const password = document.querySelector("#signupPassword");
+
+  togglePassword.addEventListener("click", function () {
+    // Toggle the type attribute
+    const type =
+      password.getAttribute("type") === "password" ? "text" : "password";
+    password.setAttribute("type", type);
+
+    // Toggle the icon
+    eyeIcon.classList.toggle("fa-eye");
+    eyeIcon.classList.toggle("fa-eye-slash");
+  });
+});
+
 // Google OAuth
 const googleBtn = document.getElementById("google-btn");
 if (googleBtn) {
@@ -186,7 +206,7 @@ if (googleBtn) {
       const { data, error } = await client.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: "https://aeiman-fayyaz.github.io/Login-Signup/post.html",
+          redirectTo: window.location.origin + "/post.html",
           queryParams: {
             access_type: "offline",
             prompt: "consent",
@@ -214,15 +234,13 @@ if (githubBtn) {
       const { data, error } = await client.auth.signInWithOAuth({
         provider: "github",
         options: {
-          redirectTo: "https://aeiman-fayyaz.github.io/Login-Signup/post.html",
+          redirectTo: window.location.origin + "/post.html",
           queryParams: {
             access_type: "offline",
             prompt: "consent",
           },
         },
       });
-
-      // After successful sign-in, get user data
       const {
         data: { user },
       } = await client.auth.getUser();
@@ -231,45 +249,36 @@ if (githubBtn) {
       console.error("Error during GitHub login:", err);
     }
   });
-  // document.addEventListener('DOMContentLoaded', userDisplay);
-  // client.auth.onAuthStateChange(() => userDisplay());
 }
 // Facebook OAuth
-const facebookBtn = document.getElementById("facebook-btn");
-if (facebookBtn) {
-  facebookBtn.addEventListener("click", async function signInWithFacebook() {
-    try {
-      const { error } = await client.auth.signInWithOAuth({
-        provider: "facebook",
-        options: {
-          redirectTo: window.location.origin + "/post.html",
-          queryParams: { access_type: "offline", prompt: "consent" },
-        },
-      });
-      if (error) throw error;
-    } catch (error) {
-      console.log("login error", error.message);
-    }
-  });
-}
+// const facebookBtn = document.getElementById("facebook-btn");
+// if (facebookBtn) {
+//   facebookBtn.addEventListener("click", async function signInWithFacebook() {
+//     try {
+//       const { error } = await client.auth.signInWithOAuth({
+//         provider: "facebook",
+//         options: {
+//           redirectTo: window.location.origin + "/post.html",
+//           queryParams: { access_type: "offline", prompt: "consent" },
+//         },
+//       });
+//       if (error) throw error;
+//     } catch (error) {
+//       console.log("login error", error.message);
+//     }
+//   });
+// }
+
 // Account Log out
 const logoutBtn = document.getElementById("logoutBtn");
-if (logoutBtn) {
+logoutBtn &&
   logoutBtn.addEventListener("click", async () => {
     try {
       const { error } = await client.auth.signOut();
       if (error) throw error;
-
-      // Force clear any remaining session data
-      localStorage.removeItem("sb-" + supabaseUrl + "-auth-token");
-      sessionStorage.removeItem("sb-" + supabaseUrl + "-auth-token");
-
-      // Redirect after ensuring logout is complete
-      setTimeout(() => {
-        window.location.href = "index.html";
-      }, 300); // Small delay to ensure cleanup
+      window.location.href = "index.html";
     } catch (error) {
-      console.error("Logout error:", error);
+      console.log("Logout Erroe: ", error);
       Swal.fire({
         icon: "error",
         title: "Logout Failed",
@@ -277,7 +286,6 @@ if (logoutBtn) {
       });
     }
   });
-}
 
 // Post App
 
@@ -377,7 +385,43 @@ function loadPostsFromStorage() {
   renderPosts();
 }
 
-// POst Creation
+// Add Post for database
+
+const submitPost = document.getElementById("submitPost");
+
+submitPost &&
+  submitPost.addEventListener("click", async () => {
+    try {
+      const userPostContent = document.getElementById("postContent").value;
+      const {
+        data: { user },
+      } = await client.auth.getUser();
+      // console.log(user.id);
+
+      const { data, error } = await client
+        .from("Post")
+        .insert({
+          id: user.id,
+          description: userPostContent,
+        })
+        .select();
+      if (error) throw error;
+      if (data) {
+        Swal.fire({
+          position: "top-center",
+          icon: "success",
+          title: "Post created successfully!",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        console.log("Post Created", data);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  });
+
+// Post Creation
 function createPost() {
   let content = document.getElementById("postContent").value.trim();
   if (!content) {

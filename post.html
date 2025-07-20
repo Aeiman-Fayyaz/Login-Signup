@@ -22,7 +22,7 @@
                 aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-           <div class="collapse navbar-collapse" id="navbarSupportedContent">
+           <div class="collapse navbar-collapse d-flex justify-content-end" id="navbarSupportedContent">
                 <div class="profileSection me-auto mb-2 mb-lg-0 d-flex justify-content-lg-between gap-5">
                     <div class="userProfile d-flex align-items-center ">
                         <img src="" alt="Profile Picture" id="profile-avatar" class="profile-avatar"
@@ -33,9 +33,12 @@
                         <p id="userEmail" class="text-light"></p>
                     </div>
                 </div>
-                <form class="d-flex">
-                    <button class="btn" id="logoutBtn">Log Out</button>
-                </form>
+                <div class="d-flex gap-3">
+                    <a href="" class="mt-2 text-decoration-none">My Post</a>
+                    <form >
+                        <button class="btn" id="logoutBtn">Log Out</button>
+                    </form>
+                </div>
             </div>
         </div>
     </nav>
@@ -76,7 +79,6 @@
                         </button>
                         <input type="file" id="fileUpload" accept=".pdf,.doc,.docx,.xls,.xlsx" style="display: none;"
                             onchange="previewMedia(this, 'file')">
-
                         <button type="button" class="btn btn-sm" onclick="getLocation()">
                             <i class="bi bi-geo-alt"></i> Check In
                         </button>
@@ -86,7 +88,7 @@
                     <div id="mediaPreview" class="mb-3"></div>
                     <div id="locationPreview" class="mb-3"></div>
 
-                    <button type="submit" class="btn">Post</button>
+                    <button type="submit" class="btn" id="submitPost">Post</button>
                 </form>
             </div>
         </div>
