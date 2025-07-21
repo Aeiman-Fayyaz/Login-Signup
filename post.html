@@ -15,33 +15,34 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-dark">
-        <div class="container d-flex justify-content-between">
+        <div class="container-fluid">
             <div>
-                <a class="navbar-brand text-light" href="./post.html">Post Hub</a>
+                <a class="navbar-brand text-light ms-3" href="./post.html">Blog Breeze</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
             </div>
-            <div class="collapse navbar-collapse d-flex" id="navbarSupportedContent">
-                <div class="profileSection me-auto mb-2 mb-lg-0 d-flex justify-content-lg-between gap-5">
-                    <div class="userProfile d-flex align-items-center ">
-                        <img src="" alt="Profile Picture" id="profile-avatar" class="profile-avatar"
-                            style="width: 40px; height: 40px;">
-                    </div>
-                    <div class="userDetails d-flex flex-column">
-                        <h3 id="userName" class="text-light"></h3>
-                        <p id="userEmail" class="text-light"></p>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                <div class="ms-auto d-lg-flex align-items-center gap-3 me-3">
+                    <div class="profileSection ms-sm-auto d-flex align-items-center gap-3 me-3 justify-content-sm-end">
+                        <div class="userProfile d-flex align-items-center ">
+                            <img src="" alt="Profile Picture" id="profile-avatar" class="profile-avatar rounded-circle"
+                                style="width: 40px; height: 40px;">
+                        </div>
+                        <div class="userDetails d-flex flex-column mt-4">
+                            <h5 id="userName" class="text-light"></h5>
+                            <p id="userEmail" class="text-light"></p>
+                        </div>
                     </div>
                 </div>
+                <div>
+                    <form class="d-flex justify-content-end">
+                        <button class="btn" id="logoutBtn">Log Out</button>
+                    </form>
+                </div>
             </div>
-            <div>
-                <form>
-                    <button class="btn" id="logoutBtn">Log Out</button>
-                </form>
-            </div>
-        </div>
         </div>
     </nav>
     <div class="container">
@@ -55,6 +56,7 @@
             <div class="card-body">
                 <form id="postForm">
                     <div class="mb-3">
+                        <input type="text" placeholder="Title" id="postTitle" class="form-control mb-3">
                         <textarea class="form-control" id="postContent" rows="3" placeholder="What's on your mind?"
                             required></textarea>
                     </div>

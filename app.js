@@ -1,7 +1,7 @@
 const supabaseUrl = "https://hwyofckifjeewvmagsgc.supabase.co";
 const supabaseKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh3eW9mY2tpZmplZXd2bWFnc2djIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE0Mzk0MDcsImV4cCI6MjA2NzAxNTQwN30.pvsjYctkRI7NHdJrSuatOb-oLoatl8dIZfHUKv74gvE";
-const REDIRECT_URL = 'https://aeiman-fayyaz.github.io/Login-Signup/post.html'
+const REDIRECT_URL = "https://aeiman-fayyaz.github.io/Login-Signup/post.html";
 
 const { createClient } = supabase;
 const client = createClient(supabaseUrl, supabaseKey);
@@ -181,23 +181,17 @@ loginBtn &&
 // Password hide / Show
 
 const inputPassword = document.getElementById("signupPassword");
+const togglePassword = document.getElementById("togglePassword");
 const eyeIcon = document.getElementById("eyeIcon");
-// const togglePassword = document.getElementById("toggle-password");
-document.addEventListener("DOMContentLoaded", function () {
-  const togglePassword = document.querySelector("#togglePassword");
-  const password = document.querySelector("#signupPassword");
 
-  togglePassword.addEventListener("click", function () {
-    // Toggle the type attribute
-    const type =
-      password.getAttribute("type") === "password" ? "text" : "password";
-    password.setAttribute("type", type);
-
-    // Toggle the icon
+if (togglePassword && inputPassword && eyeIcon) {
+  togglePassword && togglePassword.addEventListener("click", () => {
+    const type = inputPassword.getAttribute("type") === "password" ? "text" : "password";
+    inputPassword.setAttribute("type", type);
     eyeIcon.classList.toggle("fa-eye");
     eyeIcon.classList.toggle("fa-eye-slash");
   });
-});
+}
 
 // Google OAuth
 const googleBtn = document.getElementById("google-btn");
@@ -347,14 +341,16 @@ function renderPosts() {
     postElement.className = "card post-card mb-3";
     postElement.innerHTML = `
       <div class="card-body">
-        <p class="card-text">${post.content}</p>
+      <h4 class="card-text">${post.titlePost}</h4>
+      <p class="card-text">${post.content}</p>
         ${renderPostMedia(post)}
-        ${post.location
-        ? `<div class="location-badge mt-2">
+        ${
+          post.location
+            ? `<div class="location-badge mt-2">
                 <i class="bi bi-geo-alt"></i> ${post.location.name}
               </div>`
-        : ""
-      }
+            : ""
+        }
         <div class="text-muted small mt-2">
           ${formatDate(post.createdAt)}
         </div>
@@ -385,14 +381,38 @@ function loadPostsFromStorage() {
   renderPosts();
 }
 
-// Add Post for database
+// Post Creation for database
 
 const submitPost = document.getElementById("submitPost");
+const loader = document.getElementById("loader");
+
+// Show Loader
+function showLoader() {
+  loader.style.display = "flex";
+}
+
+// Hide Loader
+function hideLoader() {
+  loader.style.display = "none";
+}
 
 submitPost &&
   submitPost.addEventListener("click", async () => {
     try {
-      const userPostContent = document.getElementById("postContent").value;
+      const userPostContent = document
+        .getElementById("postContent")
+        .value.trim();
+      const userPostTitle = document.getElementById("postTitle").value.trim();
+
+      // condition if there is field value is empty
+      if (!userPostTitle || !userPostContent) {
+        Swal.fire({
+          icon: "warning",
+          title: "Empty fields",
+          text: "Enter title or description",
+          confirmButtonColor: "#3085d6"
+        });
+      }
       const {
         data: { user },
       } = await client.auth.getUser();
@@ -403,12 +423,13 @@ submitPost &&
         .insert({
           id: user.id,
           description: userPostContent,
+          title: userPostTitle,
         })
         .select();
       if (error) throw error;
       if (data) {
         Swal.fire({
-          position: "top-center",
+          position: "top-end",
           icon: "success",
           title: "Post created successfully!",
           showConfirmButton: false,
@@ -424,6 +445,9 @@ submitPost &&
 // Post Creation
 function createPost() {
   let content = document.getElementById("postContent").value.trim();
+  let titlePost = document.getElementById("postTitle").value.trim();
+  console.log(titlePost);
+  
   if (!content) return;
 
   let mediaPreview = document.getElementById("mediaPreview");
@@ -448,16 +472,20 @@ function createPost() {
   let newPost = {
     id: Date.now(),
     content: content,
+    titlePost: titlePost,
     mediaType: mediaType,
     mediaUrl: mediaUrl,
     location: currentLocation,
     createdAt: new Date().toISOString(),
   };
 
-  posts.unshift(newPost); 
+  posts.unshift(newPost);
   renderPosts();
   resetForm();
 }
+
+// Post Update for Database Supabase
+
 // Update post
 function updatePost() {
   let postId = parseInt(document.getElementById("editPostId").value);
