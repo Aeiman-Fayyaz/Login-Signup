@@ -399,10 +399,10 @@ function hideLoader() {
 submitPost &&
   submitPost.addEventListener("click", async () => {
     try {
-      const userPostContent = document
-        .getElementById("postContent")
-        .value.trim();
+      const userPostContent = document.getElementById("postContent").value.trim();
       const userPostTitle = document.getElementById("postTitle").value.trim();
+      console.log(userPostTitle);
+      
 
       // condition if there is field value is empty
       if (!userPostTitle || !userPostContent) {
