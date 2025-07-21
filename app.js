@@ -185,12 +185,14 @@ const togglePassword = document.getElementById("togglePassword");
 const eyeIcon = document.getElementById("eyeIcon");
 
 if (togglePassword && inputPassword && eyeIcon) {
-  togglePassword && togglePassword.addEventListener("click", () => {
-    const type = inputPassword.getAttribute("type") === "password" ? "text" : "password";
-    inputPassword.setAttribute("type", type);
-    eyeIcon.classList.toggle("fa-eye");
-    eyeIcon.classList.toggle("fa-eye-slash");
-  });
+  togglePassword &&
+    togglePassword.addEventListener("click", () => {
+      const type =
+        inputPassword.getAttribute("type") === "password" ? "text" : "password";
+      inputPassword.setAttribute("type", type);
+      eyeIcon.classList.toggle("fa-eye");
+      eyeIcon.classList.toggle("fa-eye-slash");
+    });
 }
 
 // Google OAuth
@@ -398,21 +400,23 @@ function hideLoader() {
 
 submitPost &&
   submitPost.addEventListener("click", async () => {
-    try {
-      const userPostContent = document.getElementById("postContent").value.trim();
-      const userPostTitle = document.getElementById("postTitle").value.trim();
-      console.log(userPostTitle);
-      
+    const userPostContent = document.getElementById("postContent").value.trim();
+    const userPostTitle = document.getElementById("postTitle").value.trim();
+    console.log(userPostTitle);
 
-      // condition if there is field value is empty
-      if (!userPostTitle || !userPostContent) {
-        Swal.fire({
-          icon: "warning",
-          title: "Empty fields",
-          text: "Enter title or description",
-          confirmButtonColor: "#3085d6"
-        });
-      }
+    // condition if there is field value is empty
+    if (!userPostTitle || !userPostContent) {
+      Swal.fire({
+        icon: "warning",
+        title: "Empty fields",
+        text: "Enter title or description",
+        confirmButtonColor: "#3085d6",
+      });
+      return;
+    }
+    showLoader();
+    submitPost.disabled = true;
+    try {
       const {
         data: { user },
       } = await client.auth.getUser();
@@ -427,7 +431,7 @@ submitPost &&
         })
         .select();
       if (error) throw error;
-      if (data) {
+      else {
         Swal.fire({
           position: "top-end",
           icon: "success",
@@ -447,7 +451,7 @@ function createPost() {
   let content = document.getElementById("postContent").value.trim();
   let titlePost = document.getElementById("postTitle").value.trim();
   console.log(titlePost);
-  
+
   if (!content) return;
 
   let mediaPreview = document.getElementById("mediaPreview");
