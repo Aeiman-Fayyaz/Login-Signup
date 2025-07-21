@@ -235,7 +235,7 @@ if (githubBtn) {
       const { data, error } = await client.auth.signInWithOAuth({
         provider: "github",
         options: {
-          redirectTo: window.location.origin + "/post.html",
+          redirectTo: REDIRECT_URL,
           queryParams: {
             access_type: "offline",
             prompt: "consent",
