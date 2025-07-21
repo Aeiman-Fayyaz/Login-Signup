@@ -203,7 +203,7 @@ if (googleBtn) {
       const { data, error } = await client.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: REDIRECT_URL,
+          redirectTo: window.location.origin + "/post.html",
           queryParams: {
             access_type: "offline",
             prompt: "consent",
@@ -231,7 +231,7 @@ if (githubBtn) {
       const { data, error } = await client.auth.signInWithOAuth({
         provider: "github",
         options: {
-          redirectTo: REDIRECT_URL,
+          redirectTo: window.location.origin + "/post.html",
           queryParams: {
             access_type: "offline",
             prompt: "consent",
@@ -386,23 +386,19 @@ function loadPostsFromStorage() {
 // Post Creation for database
 
 const submitPost = document.getElementById("submitPost");
-const loader = document.getElementById("loader");
+const loader = document.getElementById("signupLoader");
 
-// Show Loader
-function showLoader() {
-  loader.style.display = "flex";
-}
+// function showLoader() {
+//   loader.style.display = "flex";
+// }
 
-// Hide Loader
-function hideLoader() {
-  loader.style.display = "none";
-}
-
+// function hideLoader() {
+//   loader.style.display = "none";
+// }
 submitPost &&
   submitPost.addEventListener("click", async () => {
     const userPostContent = document.getElementById("postContent").value.trim();
     const userPostTitle = document.getElementById("postTitle").value.trim();
-    console.log(userPostTitle);
 
     // condition if there is field value is empty
     if (!userPostTitle || !userPostContent) {
@@ -414,16 +410,12 @@ submitPost &&
       });
       return;
     }
-    showLoader();
-    submitPost.disabled = true;
+    // showLoader();
+    submitPost.disabled = false;
     try {
       const {
         data: { user },
-        // authentication error
-        error: authError 
       } = await client.auth.getUser();
-      
-      if(authError || !user) throw authError || new Error("User not found")
 
       const { data, error } = await client
         .from("Post")
@@ -433,6 +425,7 @@ submitPost &&
           title: userPostTitle,
         })
         .select();
+      console.log(data);
       if (error) {
         console.log(error);
         Swal.fire({
@@ -441,8 +434,7 @@ submitPost &&
           text: "Problem in making post",
           confirmButtonColor: "#125b9a ",
         });
-      }
-      else {
+      } else {
         Swal.fire({
           position: "top-end",
           icon: "success",
@@ -450,83 +442,119 @@ submitPost &&
           showConfirmButton: false,
           timer: 1500,
         });
+        document.getElementById("postTitle").value = "";
+        document.getElementById("postContent").value = "";
       }
     } catch (error) {
-       Swal.fire({
-          icon: "error",
-          title: "Unexpected Error",
-          text: "Something went wrong please try again",
-          confirmButtonColor: "#125b9a ",
-        });
-    }
+      Swal.fire({
+        icon: "error",
+        title: "Unexpected Error",
+        text: "Something went wrong please try again",
+        confirmButtonColor: "#125b9a ",
+      });
+    } 
   });
 
 // Post Creation
-// function createPost() {
-//   let content = document.getElementById("postContent").value.trim();
-//   let titlePost = document.getElementById("postTitle").value.trim();
-//   console.log(titlePost);
+function createPost() {
+  let content = document.getElementById("postContent").value.trim();
+  let titlePost = document.getElementById("postTitle").value.trim();
 
-//   if (!content) return;
+  if (!content) return;
 
-//   let mediaPreview = document.getElementById("mediaPreview");
-//   let mediaType = null;
-//   let mediaUrl = null;
+  let mediaPreview = document.getElementById("mediaPreview");
+  let mediaType = null;
+  let mediaUrl = null;
 
-//   // Check if there's media to upload
-//   if (mediaPreview.children.length > 0) {
-//     let mediaElement = mediaPreview.firstChild;
-//     if (mediaElement.tagName === "IMG") {
-//       mediaType = "image";
-//       mediaUrl = mediaElement.src;
-//     } else if (mediaElement.tagName === "VIDEO") {
-//       mediaType = "video";
-//       mediaUrl = mediaElement.src;
-//     } else if (mediaElement.classList.contains("uploaded-file")) {
-//       mediaType = "file";
-//       mediaUrl = mediaElement.getAttribute("data-filename");
-//     }
-//   }
-
-//   let newPost = {
-//     id: Date.now(),
-//     content: content,
-//     titlePost: titlePost,
-//     mediaType: mediaType,
-//     mediaUrl: mediaUrl,
-//     location: currentLocation,
-//     createdAt: new Date().toISOString(),
-//   };
-
-//   posts.unshift(newPost);
-//   renderPosts();
-//   resetForm();
-// }
-
-// Post Update for Database Supabase
-
-// Update post
-function updatePost() {
-  let postId = parseInt(document.getElementById("editPostId").value);
-  let newContent = document.getElementById("editPostContent").value.trim();
-
-  let postIndex = posts.findIndex((post) => post.id === postId);
-  if (postIndex !== -1) {
-    posts[postIndex].content = newContent;
-    savePostsToStorage();
-    renderPosts();
-
-    Swal.fire({
-      position: "top-end",
-      icon: "success",
-      title: "Post updated!",
-      showConfirmButton: false,
-      timer: 1500,
-    });
+  // Check if there's media to upload
+  if (mediaPreview.children.length > 0) {
+    let mediaElement = mediaPreview.firstChild;
+    if (mediaElement.tagName === "IMG") {
+      mediaType = "image";
+      mediaUrl = mediaElement.src;
+    } else if (mediaElement.tagName === "VIDEO") {
+      mediaType = "video";
+      mediaUrl = mediaElement.src;
+    } else if (mediaElement.classList.contains("uploaded-file")) {
+      mediaType = "file";
+      mediaUrl = mediaElement.getAttribute("data-filename");
+    }
   }
 
-  bootstrap.Modal.getInstance(document.getElementById("editPostModal")).hide();
+  let newPost = {
+    id: Date.now(),
+    content: content,
+    titlePost: titlePost,
+    mediaType: mediaType,
+    mediaUrl: mediaUrl,
+    location: currentLocation,
+    createdAt: new Date().toISOString(),
+  };
+
+  posts.unshift(newPost);
+  renderPosts();
+  resetForm();
 }
+
+// Post Update for Database Supabase
+const saveUpdatePost = document.getElementById("saveUpdatePost")
+console.log(saveUpdatePost);
+
+saveUpdatePost && saveUpdatePost.addEventListener("click" , async (postId , userPostTitle , userPostContent) =>{
+  const{value : formValues} = await Swal.fire({
+    title: 'Update post',
+		html: `
+    <label > post title
+	<input id="swal-input1" class="swal1-input"  value = '${userPostTitle}' ></label>
+    <label > post description
+	<input id="swal-input2" class="swal2-input" style="margin: 0 !important;"   value = '${userPostContent}' ></label>
+  `,
+		focusConfirm: false,
+		preConfirm: () => {
+			return [document.getElementById('swal-input1').value, document.getElementById('swal-input2').value];
+		},
+	});
+  try{
+    if(formValues){
+      const [userPostTitle , userPostContent] = formValues
+      const{error} = await client.from("Post").update({userPostTitle:userPostTitle , userPostContent:userPostContent}).eq(id)
+      if(error){
+        console.log("Update Post Error:" , error);
+      }
+      else{
+        Swal.fire({
+					icon: 'success',
+					title: 'your post has been updated',
+					confirmButtonColor: '#125b9a',
+				});
+      }
+    }
+  }catch(error){
+    console.log(error);
+  }
+})  
+// Update post
+// function updatePost() {
+//   let postId = parseInt(document.getElementById("editPostId").value);
+//   let newContent = document.getElementById("editPostContent").value.trim();
+
+//   let postIndex = posts.findIndex((post) => post.id === postId);
+//   if (postIndex !== -1) {
+//     posts[postIndex].content = newContent;
+//     savePostsToStorage();
+//     renderPosts();
+
+//     Swal.fire({
+//       position: "top-end",
+//       icon: "success",
+//       title: "Post updated!",
+//       showConfirmButton: false,
+//       timer: 1500,
+//     });
+//   }
+
+//   bootstrap.Modal.getInstance(document.getElementById("editPostModal")).hide();
+// }
 
 // Delete post
 function deletePost(postId) {
@@ -620,40 +648,41 @@ function openEditPost(postId) {
   if (post) {
     document.getElementById("editPostId").value = post.id;
     document.getElementById("editPostContent").value = post.content;
+    const editPost = document.getElementById("editPostTitle").value = post.titlePost
     new bootstrap.Modal(document.getElementById("editPostModal")).show();
   }
 }
 
 // ========== INITIALIZATION ==========
-// document.addEventListener("DOMContentLoaded", function () {
-//   // Load existing posts
-//   loadPostsFromStorage();
+document.addEventListener("DOMContentLoaded", function () {
+  // Load existing posts
+  loadPostsFromStorage();
 
-//   // Form submission handlers
-//   document.getElementById("postForm").addEventListener("submit", function (e) {
-//     e.preventDefault();
-//     createPost();
-//   });
+  // Form submission handlers
+  document.getElementById("postForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    createPost();
+  });
 
-//   document
-//     .getElementById("editPostForm")
-//     .addEventListener("submit", function (e) {
-//       e.preventDefault();
-//       updatePost();
-//     });
+  document
+    .getElementById("editPostForm")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
+      // updatePost();
+    });
 
-//   // Media upload handlers
-//   document
-//     .getElementById("imageUpload")
-//     .addEventListener("change", function () {
-//       previewMedia(this, "image");
-//     });
-//   document
-//     .getElementById("videoUpload")
-//     .addEventListener("change", function () {
-//       previewMedia(this, "video");
-//     });
-//   document.getElementById("fileUpload").addEventListener("change", function () {
-//     previewMedia(this, "file");
-//   });
-// });
+  // Media upload handlers
+  document
+    .getElementById("imageUpload")
+    .addEventListener("change", function () {
+      previewMedia(this, "image");
+    });
+  document
+    .getElementById("videoUpload")
+    .addEventListener("change", function () {
+      previewMedia(this, "video");
+    });
+  document.getElementById("fileUpload").addEventListener("change", function () {
+    previewMedia(this, "file");
+  });
+});
