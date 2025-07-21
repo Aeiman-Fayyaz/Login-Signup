@@ -419,8 +419,11 @@ submitPost &&
     try {
       const {
         data: { user },
+        // authentication error
+        error: authError 
       } = await client.auth.getUser();
-      // console.log(user.id);
+      
+      if(authError || !user) throw authError || new Error("User not found")
 
       const { data, error } = await client
         .from("Post")
@@ -430,7 +433,15 @@ submitPost &&
           title: userPostTitle,
         })
         .select();
-      if (error) throw error;
+      if (error) {
+        console.log(error);
+        Swal.fire({
+          icon: "error",
+          title: "Post Failed",
+          text: "Problem in making post",
+          confirmButtonColor: "#125b9a ",
+        });
+      }
       else {
         Swal.fire({
           position: "top-end",
@@ -439,54 +450,58 @@ submitPost &&
           showConfirmButton: false,
           timer: 1500,
         });
-        console.log("Post Created", data);
       }
     } catch (error) {
-      console.log(error.message);
+       Swal.fire({
+          icon: "error",
+          title: "Unexpected Error",
+          text: "Something went wrong please try again",
+          confirmButtonColor: "#125b9a ",
+        });
     }
   });
 
 // Post Creation
-function createPost() {
-  let content = document.getElementById("postContent").value.trim();
-  let titlePost = document.getElementById("postTitle").value.trim();
-  console.log(titlePost);
+// function createPost() {
+//   let content = document.getElementById("postContent").value.trim();
+//   let titlePost = document.getElementById("postTitle").value.trim();
+//   console.log(titlePost);
 
-  if (!content) return;
+//   if (!content) return;
 
-  let mediaPreview = document.getElementById("mediaPreview");
-  let mediaType = null;
-  let mediaUrl = null;
+//   let mediaPreview = document.getElementById("mediaPreview");
+//   let mediaType = null;
+//   let mediaUrl = null;
 
-  // Check if there's media to upload
-  if (mediaPreview.children.length > 0) {
-    let mediaElement = mediaPreview.firstChild;
-    if (mediaElement.tagName === "IMG") {
-      mediaType = "image";
-      mediaUrl = mediaElement.src;
-    } else if (mediaElement.tagName === "VIDEO") {
-      mediaType = "video";
-      mediaUrl = mediaElement.src;
-    } else if (mediaElement.classList.contains("uploaded-file")) {
-      mediaType = "file";
-      mediaUrl = mediaElement.getAttribute("data-filename");
-    }
-  }
+//   // Check if there's media to upload
+//   if (mediaPreview.children.length > 0) {
+//     let mediaElement = mediaPreview.firstChild;
+//     if (mediaElement.tagName === "IMG") {
+//       mediaType = "image";
+//       mediaUrl = mediaElement.src;
+//     } else if (mediaElement.tagName === "VIDEO") {
+//       mediaType = "video";
+//       mediaUrl = mediaElement.src;
+//     } else if (mediaElement.classList.contains("uploaded-file")) {
+//       mediaType = "file";
+//       mediaUrl = mediaElement.getAttribute("data-filename");
+//     }
+//   }
 
-  let newPost = {
-    id: Date.now(),
-    content: content,
-    titlePost: titlePost,
-    mediaType: mediaType,
-    mediaUrl: mediaUrl,
-    location: currentLocation,
-    createdAt: new Date().toISOString(),
-  };
+//   let newPost = {
+//     id: Date.now(),
+//     content: content,
+//     titlePost: titlePost,
+//     mediaType: mediaType,
+//     mediaUrl: mediaUrl,
+//     location: currentLocation,
+//     createdAt: new Date().toISOString(),
+//   };
 
-  posts.unshift(newPost);
-  renderPosts();
-  resetForm();
-}
+//   posts.unshift(newPost);
+//   renderPosts();
+//   resetForm();
+// }
 
 // Post Update for Database Supabase
 
