@@ -625,35 +625,35 @@ function openEditPost(postId) {
 }
 
 // ========== INITIALIZATION ==========
-document.addEventListener("DOMContentLoaded", function () {
-  // Load existing posts
-  loadPostsFromStorage();
+// document.addEventListener("DOMContentLoaded", function () {
+//   // Load existing posts
+//   loadPostsFromStorage();
 
-  // Form submission handlers
-  document.getElementById("postForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-    createPost();
-  });
+//   // Form submission handlers
+//   document.getElementById("postForm").addEventListener("submit", function (e) {
+//     e.preventDefault();
+//     createPost();
+//   });
 
-  document
-    .getElementById("editPostForm")
-    .addEventListener("submit", function (e) {
-      e.preventDefault();
-      updatePost();
-    });
+//   document
+//     .getElementById("editPostForm")
+//     .addEventListener("submit", function (e) {
+//       e.preventDefault();
+//       updatePost();
+//     });
 
-  // Media upload handlers
-  document
-    .getElementById("imageUpload")
-    .addEventListener("change", function () {
-      previewMedia(this, "image");
-    });
-  document
-    .getElementById("videoUpload")
-    .addEventListener("change", function () {
-      previewMedia(this, "video");
-    });
-  document.getElementById("fileUpload").addEventListener("change", function () {
-    previewMedia(this, "file");
-  });
-});
+//   // Media upload handlers
+//   document
+//     .getElementById("imageUpload")
+//     .addEventListener("change", function () {
+//       previewMedia(this, "image");
+//     });
+//   document
+//     .getElementById("videoUpload")
+//     .addEventListener("change", function () {
+//       previewMedia(this, "video");
+//     });
+//   document.getElementById("fileUpload").addEventListener("change", function () {
+//     previewMedia(this, "file");
+//   });
+// });
