@@ -206,7 +206,7 @@ if (googleBtn) {
       const { data, error } = await client.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: window.location.origin + "/post.html",
+          redirectTo: window.location.href + "/post.html",
           queryParams: {
             access_type: "offline",
             prompt: "consent",
