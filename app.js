@@ -386,15 +386,15 @@ function loadPostsFromStorage() {
 // Post Creation for database
 
 const submitPost = document.getElementById("submitPost");
-const loader = document.getElementById("signupLoader");
+const loaderOverlay = document.getElementById("loaderOverlay");
 
-// function showLoader() {
-//   loader.style.display = "flex";
-// }
+function showLoader() {
+  loaderOverlay.style.display = "flex";
+}
 
-// function hideLoader() {
-//   loader.style.display = "none";
-// }
+function hideLoader() {
+  loaderOverlay.style.display = "none";
+}
 submitPost &&
   submitPost.addEventListener("click", async () => {
     const userPostContent = document.getElementById("postContent").value.trim();
@@ -410,22 +410,22 @@ submitPost &&
       });
       return;
     }
-    // showLoader();
+    showLoader();
     submitPost.disabled = false;
     try {
       const {
         data: { user },
+        error: authError
       } = await client.auth.getUser();
-
+      if(authError || !user) throw authError || new Error("User not found")
       const { data, error } = await client
-        .from("Post")
+        .from("post")
         .insert({
           id: user.id,
           description: userPostContent,
           title: userPostTitle,
         })
         .select();
-      console.log(data);
       if (error) {
         console.log(error);
         Swal.fire({
@@ -452,8 +452,37 @@ submitPost &&
         text: "Something went wrong please try again",
         confirmButtonColor: "#125b9a ",
       });
-    } 
+    } finally{
+      hideLoader()
+      submitPost.disabled = false
+    }
   });
+
+// All Blogs showing 
+
+if(window.location.pathname == "/allBlogs.html"){
+  const currentNavLink = document.getElementById("currentNavLink")
+  currentNavLink.style.textDecoration = "underline red"
+  
+  try {
+    // function for all all post
+    const readAllBlogs = async () => {
+      // data getting from post table
+      const{data , error} = await client.from("post").select()
+      if(data){
+        const postBox = document.getElementById("allBlogContainer")
+        console.log(postBox);
+        postBox.innerHTML = data.map(
+          ({id , title , description}) => `<div id = '${id}' class="card bg-info text-white" style="width: 18rem;`
+        )
+      }
+      
+    }
+  } catch (error) {
+    
+  }
+  
+}
 
 // Post Creation
 function createPost() {
@@ -498,7 +527,6 @@ function createPost() {
 
 // Post Update for Database Supabase
 const saveUpdatePost = document.getElementById("saveUpdatePost")
-console.log(saveUpdatePost);
 
 saveUpdatePost && saveUpdatePost.addEventListener("click" , async (postId , userPostTitle , userPostContent) =>{
   const{value : formValues} = await Swal.fire({
@@ -643,46 +671,47 @@ function getLocation() {
   );
 }
 
-function openEditPost(postId) {
-  let post = posts.find((p) => p.id === postId);
-  if (post) {
-    document.getElementById("editPostId").value = post.id;
-    document.getElementById("editPostContent").value = post.content;
-    const editPost = document.getElementById("editPostTitle").value = post.titlePost
-    new bootstrap.Modal(document.getElementById("editPostModal")).show();
-  }
-}
+// function openEditPost(postId) {
+//   let post = posts.find((p) => p.id === postId);
+//   if (post) {
+//     document.getElementById("editPostId").value = post.id;
+//     document.getElementById("editPostContent").value = post.content;
+//     const editPost = document.getElementById("editPostTitle").value = post.titlePost
+//     console.log(editPost);
+    
+//     new bootstrap.Modal(document.getElementById("editPostModal")).show();
+//   }
+// }
 
 // ========== INITIALIZATION ==========
-document.addEventListener("DOMContentLoaded", function () {
+// document.addEventListener("DOMContentLoaded", function () {
   // Load existing posts
-  loadPostsFromStorage();
+  // loadPostsFromStorage();
 
   // Form submission handlers
-  document.getElementById("postForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-    createPost();
-  });
+  // document.getElementById("postForm").addEventListener("submit", function (e) {
+  //   e.preventDefault();
+  //   createPost();
+  // });
 
-  document
-    .getElementById("editPostForm")
-    .addEventListener("submit", function (e) {
-      e.preventDefault();
+  // document
+  //   .getElementById("editPostForm").addEventListener("submit", function (e) {
+  //     e.preventDefault();
       // updatePost();
-    });
+    // });
 
   // Media upload handlers
-  document
-    .getElementById("imageUpload")
-    .addEventListener("change", function () {
-      previewMedia(this, "image");
-    });
-  document
-    .getElementById("videoUpload")
-    .addEventListener("change", function () {
-      previewMedia(this, "video");
-    });
-  document.getElementById("fileUpload").addEventListener("change", function () {
-    previewMedia(this, "file");
-  });
-});
+//   document
+//     .getElementById("imageUpload")
+//     .addEventListener("change", function () {
+//       previewMedia(this, "image");
+//     });
+//   document
+//     .getElementById("videoUpload")
+//     .addEventListener("change", function () {
+//       previewMedia(this, "video");
+//     });
+//   document.getElementById("fileUpload").addEventListener("change", function () {
+//     previewMedia(this, "file");
+//   });
+// });

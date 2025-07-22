@@ -25,6 +25,17 @@
                 </button>
             </div>
             <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link text-white fw-bolder" href="post.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white fw-bolder" href="allBlogs.html">All Blogs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white fw-bolder" href="myBlogs.html">My Blog</a>
+                    </li>
+                </ul>
                 <div class="ms-auto d-lg-flex align-items-center gap-3 me-3">
                     <div class="profileSection ms-sm-auto d-flex align-items-center gap-3 me-3 justify-content-sm-end">
                         <div class="userProfile d-flex align-items-center ">
@@ -104,7 +115,7 @@
     </div>
 
     <!-- Edit Post -->
-    <div class="modal fade" id="editPostModal" tabindex="-1" aria-hidden="true">
+    <!-- <div class="modal fade" id="editPostModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -123,9 +134,15 @@
                 </div>
             </div>
         </div>
+    </div> -->
+
+
+
+    <!-- Bootstrap Loader -->
+    <div class="text-center">
+        <div class="spinner-border d-none" id="loaderOverlay" role="status">
+        </div>
     </div>
-
-
     <!-- Supabase Javascript -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Our JavaScript -->
