@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Blogs | Post Breeze</title>
+    <link rel="stylesheet" href="post.css">
+    <!-- BootStrap CSS -->
+    <link rel="stylesheet" href="bootstrap.css">
+    <link rel="stylesheet" href="style.css">
+    <!-- Sweetalerts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+        <div class="container">
+            <div>
+                <a class="navbar-brand text-light ms-3" href="./post.html">Blog Breeze</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link text-white fw-bolder" href="post.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white fw-bolder" id="currentNavLink" href="allBlogs.html">All Blogs</a>
+                    </li>
+                    <li class="nav-item" id="current">
+                        <a class="nav-link text-white fw-bolder" href="myBlogs.html">My Blog</a>
+                    </li>
+                </ul>
+                <div class="ms-auto d-lg-flex align-items-center gap-3 me-3">
+                    <div class="profileSection ms-sm-auto d-flex align-items-center gap-3 me-3 justify-content-sm-end">
+                        <div class="userProfile d-flex align-items-center ">
+                            <img src="" alt="Profile Picture" id="profile-avatar" class="profile-avatar rounded-circle"
+                                style="width: 40px; height: 40px;">
+                        </div>
+                        <div class="userDetails d-flex flex-column mt-4">
+                            <h5 id="userName" class="text-light"></h5>
+                            <p id="userEmail" class="text-light"></p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <form class="d-flex justify-content-end">
+                        <button class="btn" id="logoutBtn">Log Out</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Showing all posts -->
+    <div  class="container">
+        <div class="row gap-3" id="myBlogContainer"></div>
+    </div>
+
+
+
+
+
+
+
+
+    <!-- Supabase Javascript -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Our JavaScript -->
+    <script src="app.js"></script>
+    <!-- Bootstrap JavaScript -->
+    <script src="bootstrap.js"></script>
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+
+</html>

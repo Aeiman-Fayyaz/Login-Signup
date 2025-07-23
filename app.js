@@ -284,105 +284,6 @@ logoutBtn &&
     }
   });
 
-// Post App
-
-let posts = [];
-let currentLocation = null;
-
-// Date in post
-function formatDate(isoString) {
-  let date = new Date(isoString);
-  return (
-    date.toLocaleDateString() +
-    " at " +
-    date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-  );
-}
-
-function resetForm() {
-  document.getElementById("postForm").reset();
-  document.getElementById("mediaPreview").innerHTML = "";
-  document.getElementById("locationPreview").innerHTML = "";
-  currentLocation = null;
-}
-
-// Render media
-function renderPostMedia(post) {
-  if (!post.mediaType) return "";
-
-  switch (post.mediaType) {
-    case "image":
-      return `<img src="${post.mediaUrl}" class="post-media" alt="Post image">`;
-    case "video":
-      return `<video controls class="post-media">
-                <source src="${post.mediaUrl}" type="video/mp4">
-                Your browser does not support the video tag.
-              </video>`;
-    case "file":
-      return `<a href="#" class="post-file uploaded-file" data-filename="${post.mediaUrl}">
-                <i class="bi bi-file-earmark"></i> ${post.mediaUrl}
-              </a>`;
-    default:
-      return "";
-  }
-}
-
-// Render post
-function renderPosts() {
-  let postsFeed = document.getElementById("postsFeed");
-  postsFeed.innerHTML = "";
-
-  if (posts.length === 0) {
-    postsFeed.innerHTML =
-      '<p class="text-light text-center">No posts yet. Create your first post!</p>';
-    return;
-  }
-
-  posts.forEach(function (post) {
-    let postElement = document.createElement("div");
-    postElement.className = "card post-card mb-3";
-    postElement.innerHTML = `
-      <div class="card-body">
-      <h4 class="card-text">${post.titlePost}</h4>
-      <p class="card-text">${post.content}</p>
-        ${renderPostMedia(post)}
-        ${
-          post.location
-            ? `<div class="location-badge mt-2">
-                <i class="bi bi-geo-alt"></i> ${post.location.name}
-              </div>`
-            : ""
-        }
-        <div class="text-muted small mt-2">
-          ${formatDate(post.createdAt)}
-        </div>
-        <div class="post-actions">
-          <button class="edit-btn" onclick="openEditPost(${post.id})">
-            <i class="bi bi-pencil"></i> Edit
-          </button>
-          <button class="dlt-btn" onclick="deletePost(${post.id})">
-            <i class="bi bi-trash"></i> Delete
-          </button>
-        </div>
-      </div>
-    `;
-    postsFeed.appendChild(postElement);
-  });
-}
-
-// Post save in local storage
-function savePostsToStorage() {
-  localStorage.setItem("socialMediaPosts", JSON.stringify(posts));
-}
-
-function loadPostsFromStorage() {
-  const savedPosts = localStorage.getItem("socialMediaPosts");
-  if (savedPosts) {
-    posts = JSON.parse(savedPosts);
-  }
-  renderPosts();
-}
-
 // Post Creation for database
 
 const submitPost = document.getElementById("submitPost");
@@ -415,19 +316,22 @@ submitPost &&
     try {
       const {
         data: { user },
-        error: authError
+        error: authError,
       } = await client.auth.getUser();
-      if(authError || !user) throw authError || new Error("User not found")
+      // User authentication error
+      if (authError || !user) throw authError || new Error("User not found");
       const { data, error } = await client
         .from("post")
         .insert({
-        user_id:user.id,
+          user_id: user.id,
           description: userPostContent,
           title: userPostTitle,
         })
         .select();
+      console.log(data);
       if (error) {
         console.log(error);
+        // Post failed
         Swal.fire({
           icon: "error",
           title: "Post Failed",
@@ -435,6 +339,7 @@ submitPost &&
           confirmButtonColor: "#125b9a ",
         });
       } else {
+        // Post success
         Swal.fire({
           position: "top-end",
           icon: "success",
@@ -442,6 +347,7 @@ submitPost &&
           showConfirmButton: false,
           timer: 1500,
         });
+        // After post success field empty
         document.getElementById("postTitle").value = "";
         document.getElementById("postContent").value = "";
       }
@@ -452,118 +358,148 @@ submitPost &&
         text: "Something went wrong please try again",
         confirmButtonColor: "#125b9a ",
       });
-    } finally{
-      hideLoader()
-      submitPost.disabled = false
+    } finally {
+      hideLoader();
+      submitPost.disabled = false;
     }
   });
 
-// All Blogs showing 
+// All Blogs showing
 
-if(window.location.pathname == "/allBlogs.html"){
-  const currentNavLink = document.getElementById("currentNavLink")
-  currentNavLink.style.textDecoration = "underline red"
-  
+// Page redirection
+if (window.location.pathname == "/allBlogs.html") {
+  const currentNavLink = document.getElementById("currentNavLink");
+  currentNavLink.style.textDecoration = "underline red";
+
   try {
     // function for all all post
     const readAllBlogs = async () => {
       // data getting from post table
-      const{data , error} = await client.from("post").select()
-      if(data){
-        const postBox = document.getElementById("allBlogContainer")
-        console.log(postBox);
-        postBox.innerHTML = data.map(
-          ({id , title , description}) => `<div id = '${id}' class="card bg-info text-white" style="width: 18rem;
+      const { data, error } = await client.from("post").select();
+      if (data) {
+        const postBox = document.getElementById("allBlogContainer");
+        // Set data in box title description
+        postBox.innerHTML = data
+          .map(
+            ({
+              id,
+              title,
+              description,
+            }) => `<div id = '${id}' class="card p-3 ms-5 col-lg-4 col-md-6 col-sm-12 mb-4" style="width: 18rem";
           <div classs="card-body">
-
+          <h5 class = "card-title text-black">${title}</h5>
+          <h6 class = "card-text">${description}</h5>
+          </div>
           </div>`
-        )
+          )
+          .join()
+      } else {
+        console.log(error);
       }
-      
-    }
+    };
+    readAllBlogs();
   } catch (error) {
-    
+    console.log(error);
   }
-  
 }
 
-// Post Creation
-function createPost() {
-  let content = document.getElementById("postContent").value.trim();
-  let titlePost = document.getElementById("postTitle").value.trim();
+// My Blogs showing
 
-  if (!content) return;
-
-  let mediaPreview = document.getElementById("mediaPreview");
-  let mediaType = null;
-  let mediaUrl = null;
-
-  // Check if there's media to upload
-  if (mediaPreview.children.length > 0) {
-    let mediaElement = mediaPreview.firstChild;
-    if (mediaElement.tagName === "IMG") {
-      mediaType = "image";
-      mediaUrl = mediaElement.src;
-    } else if (mediaElement.tagName === "VIDEO") {
-      mediaType = "video";
-      mediaUrl = mediaElement.src;
-    } else if (mediaElement.classList.contains("uploaded-file")) {
-      mediaType = "file";
-      mediaUrl = mediaElement.getAttribute("data-filename");
-    }
+// Create function
+const readMyPosts = async () => {
+  const {
+    data: { user },
+  } = await client.auth.getUser();
+  // Supabase Method
+  const { data, error } = await client
+    .from("post")
+    .select()
+    .eq("user_id", user.id);
+  console.log(data);
+  if (data) {
+    const readMyPost = document.getElementById("myBlogContainer");
+    console.log(readMyPost);
+    readMyPost.innerHTML = data
+      .map(
+        ({
+          id,
+          title,
+          description,
+        }) => `<div id = '${id}' class="card p-3 ms-5 col-lg-4 col-md-6 col-sm-12 mb-4 h-100" style="width: 18rem";
+          <div classs="card-body">
+          <h5 class = "card-title text-black">${title}</h5>
+          <h6 class = "card-text">${description}</h5>
+          <div class="d-flex gap-4 px-4">
+						<button type="button" onclick="updatePost('${id}','${title}','${description}')" class="edit-btn">Edit</button>
+						<button type="button" onclick="deletePost('${id}')"  class="delete">Delete</button>
+          </div>
+          </div>
+          </div>`
+      )
+      .join();
+  } else {
+    console.log(error);
   }
-
-  let newPost = {
-    id: Date.now(),
-    content: content,
-    titlePost: titlePost,
-    mediaType: mediaType,
-    mediaUrl: mediaUrl,
-    location: currentLocation,
-    createdAt: new Date().toISOString(),
-  };
-
-  posts.unshift(newPost);
-  renderPosts();
-  resetForm();
+};
+// Page location redirection
+if(window.location.pathname == "/myBlogs.html"){
+  const current = document.getElementById("current")
+  current.style.textDecoration = "underline red"
+  try{
+    readMyPosts()
+  }
+  catch(error){
+    console.log(error);
+  }
 }
+
 
 // Post Update for Database Supabase
-const saveUpdatePost = document.getElementById("saveUpdatePost")
-
-saveUpdatePost && saveUpdatePost.addEventListener("click" , async (postId , userPostTitle , userPostContent) =>{
-  const{value : formValues} = await Swal.fire({
-    title: 'Update post',
-		html: `
+    async (postId, userPostTitle, userPostContent) => {
+      const { value: formValues } = await Swal.fire({
+        title: "Update post",
+        html: `
     <label > post title
 	<input id="swal-input1" class="swal1-input"  value = '${userPostTitle}' ></label>
     <label > post description
 	<input id="swal-input2" class="swal2-input" style="margin: 0 !important;"   value = '${userPostContent}' ></label>
   `,
-		focusConfirm: false,
-		preConfirm: () => {
-			return [document.getElementById('swal-input1').value, document.getElementById('swal-input2').value];
-		},
-	});
-  try{
-    if(formValues){
-      const [userPostTitle , userPostContent] = formValues
-      const{error} = await client.from("Post").update({userPostTitle:userPostTitle , userPostContent:userPostContent}).eq(id)
-      if(error){
-        console.log("Update Post Error:" , error);
+        focusConfirm: false,
+        preConfirm: () => {
+          return [
+            document.getElementById("swal-input1").value,
+            document.getElementById("swal-input2").value,
+          ];
+        },
+      });
+      try {
+        if (formValues) {
+          const [userPostTitle, userPostContent] = formValues;
+          const { error } = await client
+            .from("Post")
+            .update({
+              userPostTitle: userPostTitle,
+              userPostContent: userPostContent,
+            })
+            .eq(id);
+          if (error) {
+            console.log("Update Post Error:", error);
+          } else {
+            Swal.fire({
+              icon: "success",
+              title: "your post has been updated",
+              confirmButtonColor: "#125b9a",
+            });
+          }
+        }
+      } catch (error) {
+        console.log(error);
       }
-      else{
-        Swal.fire({
-					icon: 'success',
-					title: 'your post has been updated',
-					confirmButtonColor: '#125b9a',
-				});
-      }
-    }
-  }catch(error){
-    console.log(error);
-  }
-})  
+    };
+
+
+// OLD POST APP CODE
+
 // Update post
 // function updatePost() {
 //   let postId = parseInt(document.getElementById("editPostId").value);
@@ -608,71 +544,71 @@ function deletePost(postId) {
 }
 
 // Media
-function previewMedia(input, type) {
-  let mediaPreview = document.getElementById("mediaPreview");
-  mediaPreview.innerHTML = "";
+// function previewMedia(input, type) {
+//   let mediaPreview = document.getElementById("mediaPreview");
+//   mediaPreview.innerHTML = "";
 
-  if (input.files && input.files[0]) {
-    let file = input.files[0];
-    let reader = new FileReader();
+//   if (input.files && input.files[0]) {
+//     let file = input.files[0];
+//     let reader = new FileReader();
 
-    reader.onload = function (e) {
-      if (type === "image") {
-        let img = document.createElement("img");
-        img.src = e.target.result;
-        img.style.maxWidth = "100%";
-        img.style.maxHeight = "200px";
-        mediaPreview.appendChild(img);
-      } else if (type === "video") {
-        let video = document.createElement("video");
-        video.src = e.target.result;
-        video.controls = true;
-        video.style.maxWidth = "100%";
-        mediaPreview.appendChild(video);
-      } else if (type === "file") {
-        let fileElement = document.createElement("div");
-        fileElement.className = "uploaded-file";
-        fileElement.setAttribute("data-filename", file.name);
-        fileElement.innerHTML = `<i class="bi bi-file-earmark"></i> ${file.name}`;
-        mediaPreview.appendChild(fileElement);
-      }
-    };
-    reader.readAsDataURL(file);
-  }
-}
+//     reader.onload = function (e) {
+//       if (type === "image") {
+//         let img = document.createElement("img");
+//         img.src = e.target.result;
+//         img.style.maxWidth = "100%";
+//         img.style.maxHeight = "200px";
+//         mediaPreview.appendChild(img);
+//       } else if (type === "video") {
+//         let video = document.createElement("video");
+//         video.src = e.target.result;
+//         video.controls = true;
+//         video.style.maxWidth = "100%";
+//         mediaPreview.appendChild(video);
+//       } else if (type === "file") {
+//         let fileElement = document.createElement("div");
+//         fileElement.className = "uploaded-file";
+//         fileElement.setAttribute("data-filename", file.name);
+//         fileElement.innerHTML = `<i class="bi bi-file-earmark"></i> ${file.name}`;
+//         mediaPreview.appendChild(fileElement);
+//       }
+//     };
+//     reader.readAsDataURL(file);
+//   }
+// }
 
-function getLocation() {
-  let locationPreview = document.getElementById("locationPreview");
+// function getLocation() {
+//   let locationPreview = document.getElementById("locationPreview");
 
-  if (!navigator.geolocation) {
-    locationPreview.innerHTML =
-      '<div class="text-danger">Geolocation not supported</div>';
-    return;
-  }
+//   if (!navigator.geolocation) {
+//     locationPreview.innerHTML =
+//       '<div class="text-danger">Geolocation not supported</div>';
+//     return;
+//   }
 
-  locationPreview.innerHTML =
-    '<div class="text-muted">Getting location...</div>';
+//   locationPreview.innerHTML =
+//     '<div class="text-muted">Getting location...</div>';
 
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      currentLocation = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-        name: "Your Current Location",
-      };
-      locationPreview.innerHTML = `
-        <div class="location-badge">
-          <i class="bi bi-geo-alt"></i> ${currentLocation.name}
-        </div>
-      `;
-    },
-    (error) => {
-      locationPreview.innerHTML =
-        '<div class="text-danger">Location access denied</div>';
-      console.error("Geolocation error:", error);
-    }
-  );
-}
+//   navigator.geolocation.getCurrentPosition(
+//     (position) => {
+//       currentLocation = {
+//         lat: position.coords.latitude,
+//         lng: position.coords.longitude,
+//         name: "Your Current Location",
+//       };
+//       locationPreview.innerHTML = `
+//         <div class="location-badge">
+//           <i class="bi bi-geo-alt"></i> ${currentLocation.name}
+//         </div>
+//       `;
+//     },
+//     (error) => {
+//       locationPreview.innerHTML =
+//         '<div class="text-danger">Location access denied</div>';
+//       console.error("Geolocation error:", error);
+//     }
+//   );
+// }
 
 // function openEditPost(postId) {
 //   let post = posts.find((p) => p.id === postId);
@@ -681,29 +617,29 @@ function getLocation() {
 //     document.getElementById("editPostContent").value = post.content;
 //     const editPost = document.getElementById("editPostTitle").value = post.titlePost
 //     console.log(editPost);
-    
+
 //     new bootstrap.Modal(document.getElementById("editPostModal")).show();
 //   }
 // }
 
 // ========== INITIALIZATION ==========
 // document.addEventListener("DOMContentLoaded", function () {
-  // Load existing posts
-  // loadPostsFromStorage();
+// Load existing posts
+// loadPostsFromStorage();
 
-  // Form submission handlers
-  // document.getElementById("postForm").addEventListener("submit", function (e) {
-  //   e.preventDefault();
-  //   createPost();
-  // });
+// Form submission handlers
+// document.getElementById("postForm").addEventListener("submit", function (e) {
+//   e.preventDefault();
+//   createPost();
+// });
 
-  // document
-  //   .getElementById("editPostForm").addEventListener("submit", function (e) {
-  //     e.preventDefault();
-      // updatePost();
-    // });
+// document
+//   .getElementById("editPostForm").addEventListener("submit", function (e) {
+//     e.preventDefault();
+// updatePost();
+// });
 
-  // Media upload handlers
+// Media upload handlers
 //   document
 //     .getElementById("imageUpload")
 //     .addEventListener("change", function () {
@@ -718,3 +654,101 @@ function getLocation() {
 //     previewMedia(this, "file");
 //   });
 // });
+
+
+// let posts = [];
+// let currentLocation = null;
+
+// // Date in post
+// function formatDate(isoString) {
+//   let date = new Date(isoString);
+//   return (
+//     date.toLocaleDateString() +
+//     " at " +
+//     date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+//   );
+// }
+
+// function resetForm() {
+//   document.getElementById("postForm").reset();
+//   document.getElementById("mediaPreview").innerHTML = "";
+//   document.getElementById("locationPreview").innerHTML = "";
+//   currentLocation = null;
+// }
+
+// // Render media
+// function renderPostMedia(post) {
+//   if (!post.mediaType) return "";
+
+//   switch (post.mediaType) {
+//     case "image":
+//       return `<img src="${post.mediaUrl}" class="post-media" alt="Post image">`;
+//     case "video":
+//       return `<video controls class="post-media">
+//                 <source src="${post.mediaUrl}" type="video/mp4">
+//                 Your browser does not support the video tag.
+//               </video>`;
+//     case "file":
+//       return `<a href="#" class="post-file uploaded-file" data-filename="${post.mediaUrl}">
+//                 <i class="bi bi-file-earmark"></i> ${post.mediaUrl}
+//               </a>`;
+//     default:
+//       return "";
+//   }
+// }
+
+// // Render post
+// function renderPosts() {
+//   let postsFeed = document.getElementById("postsFeed");
+//   postsFeed.innerHTML = "";
+
+//   if (posts.length === 0) {
+//     postsFeed.innerHTML =
+//       '<p class="text-light text-center">No posts yet. Create your first post!</p>';
+//     return;
+//   }
+
+//   posts.forEach(function (post) {
+//     let postElement = document.createElement("div");
+//     postElement.className = "card post-card mb-3";
+//     postElement.innerHTML = `
+//       <div class="card-body">
+//       <h4 class="card-text">${post.titlePost}</h4>
+//       <p class="card-text">${post.content}</p>
+//         ${renderPostMedia(post)}
+//         ${
+//           post.location
+//             ? `<div class="location-badge mt-2">
+//                 <i class="bi bi-geo-alt"></i> ${post.location.name}
+//               </div>`
+//             : ""
+//         }
+//         <div class="text-muted small mt-2">
+//           ${formatDate(post.createdAt)}
+//         </div>
+//         <div class="post-actions">
+//           <button class="edit-btn" onclick="openEditPost(${post.id})">
+//             <i class="bi bi-pencil"></i> Edit
+//           </button>
+//           <button class="dlt-btn" onclick="deletePost(${post.id})">
+//             <i class="bi bi-trash"></i> Delete
+//           </button>
+//         </div>
+//       </div>
+//     `;
+//     postsFeed.appendChild(postElement);
+//   });
+// }
+
+// // Post save in local storage
+// function savePostsToStorage() {
+//   localStorage.setItem("socialMediaPosts", JSON.stringify(posts));
+// }
+
+// function loadPostsFromStorage() {
+//   const savedPosts = localStorage.getItem("socialMediaPosts");
+//   if (savedPosts) {
+//     posts = JSON.parse(savedPosts);
+//   }
+//   renderPosts();
+// }
