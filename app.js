@@ -421,7 +421,7 @@ submitPost &&
       const { data, error } = await client
         .from("post")
         .insert({
-          id: user.id,
+        user_id:user.id,
           description: userPostContent,
           title: userPostTitle,
         })
@@ -473,7 +473,10 @@ if(window.location.pathname == "/allBlogs.html"){
         const postBox = document.getElementById("allBlogContainer")
         console.log(postBox);
         postBox.innerHTML = data.map(
-          ({id , title , description}) => `<div id = '${id}' class="card bg-info text-white" style="width: 18rem;`
+          ({id , title , description}) => `<div id = '${id}' class="card bg-info text-white" style="width: 18rem;
+          <div classs="card-body">
+
+          </div>`
         )
       }
       
