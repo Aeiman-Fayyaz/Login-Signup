@@ -141,7 +141,7 @@ loginBtn &&
     if (userLoginEmail && userLoginPassword) {
       try {
         const loader = document.getElementById("loader");
-        loader.style.display = "block";
+        // loader.style.display = "block";
         const { data, error } = await client.auth.signInWithPassword({
           email: userLoginEmail.value,
           password: userLoginPassword.value,
