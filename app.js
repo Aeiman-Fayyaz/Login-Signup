@@ -296,6 +296,8 @@ function showLoader() {
 function hideLoader() {
   loaderOverlay.style.display = "none";
 }
+
+// Add post function
 submitPost &&
   submitPost.addEventListener("click", async () => {
     const userPostContent = document.getElementById("postContent").value.trim();
@@ -392,7 +394,7 @@ if (window.location.pathname == "/allBlogs.html") {
           </div>
           </div>`
           )
-          .join()
+          .join();
       } else {
         console.log(error);
       }
@@ -442,61 +444,101 @@ const readMyPosts = async () => {
   }
 };
 // Page location redirection
-if(window.location.pathname == "/myBlogs.html"){
-  const current = document.getElementById("current")
-  current.style.textDecoration = "underline red"
-  try{
-    readMyPosts()
-  }
-  catch(error){
+if (window.location.pathname == "/myBlogs.html") {
+  const current = document.getElementById("current");
+  current.style.textDecoration = "underline red";
+  try {
+    readMyPosts();
+  } catch (error) {
     console.log(error);
   }
 }
 
-
 // Post Update for Database Supabase
-    async (postId, userPostTitle, userPostContent) => {
-      const { value: formValues } = await Swal.fire({
-        title: "Update post",
-        html: `
-    <label > post title
-	<input id="swal-input1" class="swal1-input"  value = '${userPostTitle}' ></label>
-    <label > post description
-	<input id="swal-input2" class="swal2-input" style="margin: 0 !important;"   value = '${userPostContent}' ></label>
+const updatePost = async (id, userPostTitle, userPostContent) => {
+  const { value: formValues } = await Swal.fire({
+    title: "Update post",
+    html: `
+    <label>Post Title</label>
+    <input id="swal-input1" class="swal1-input w-75 h-25" value = '${userPostTitle}' >
+    <label class = "pt-2">Post Description</label>
+	<input id="swal-input2" class="swal2-input w-75 pt-0" value = '${userPostContent}'>
   `,
-        focusConfirm: false,
-        preConfirm: () => {
-          return [
-            document.getElementById("swal-input1").value,
-            document.getElementById("swal-input2").value,
-          ];
-        },
-      });
+    focusConfirm: false,
+    preConfirm: () => {
+      return [
+        document.getElementById("swal-input1").value,
+        document.getElementById("swal-input2").value,
+      ];
+    },
+  });
+  try {
+    if (formValues) {
+      const [updatedPostTitle, updatedPostContent] = formValues;
+      const { error } = await client
+        .from("post")
+        .update({
+          title: updatedPostTitle,
+          description: updatedPostContent,
+        })
+        .eq("id", id)
+        .select();
+      if (error) {
+        console.log("Update Post Error:", error);
+      } else {
+        Swal.fire({
+          icon: "success",
+          title: "your post has been updated",
+          confirmButtonColor: "#125b9a",
+        });
+        readMyPosts();
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// Post Delete for Database Supabase
+
+const deletePost = async(id) =>{
+  const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+      confirmButton: "btn-success",
+      cancelButton: "btn-danger",
+    },
+    buttonsStyling: false,
+  });
+  swalWithBootstrapButtons
+    .fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "No, cancel!",
+      reverseButtons: true,
+    })
+    .then(async (result) => {
       try {
-        if (formValues) {
-          const [userPostTitle, userPostContent] = formValues;
-          const { error } = await client
-            .from("Post")
-            .update({
-              userPostTitle: userPostTitle,
-              userPostContent: userPostContent,
-            })
-            .eq(id);
-          if (error) {
-            console.log("Update Post Error:", error);
-          } else {
-            Swal.fire({
-              icon: "success",
-              title: "your post has been updated",
-              confirmButtonColor: "#125b9a",
-            });
-          }
-        }
+        if (result.isConfirmed) {
+          const response = await client
+            .from("post")
+            .delete()
+            .eq("id", id)
+            .select();
+          Swal.fire("Post has been deleted!");
+          console.log(response);
+          readMyPosts();
+        } else
+          (error) => {
+            console.log(error);
+          };
       } catch (error) {
         console.log(error);
       }
-    };
-
+    });
+}
 
 // OLD POST APP CODE
 
@@ -524,24 +566,24 @@ if(window.location.pathname == "/myBlogs.html"){
 // }
 
 // Delete post
-function deletePost(postId) {
-  Swal.fire({
-    title: "Are you sure?",
-    text: "You won't be able to revert this!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, delete it!",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      posts = posts.filter((post) => post.id !== postId);
-      savePostsToStorage();
-      renderPosts();
-      Swal.fire("Deleted!", "Your post has been deleted.", "success");
-    }
-  });
-}
+// function deletePost(postId) {
+//   Swal.fire({
+//     title: "Are you sure?",
+//     text: "You won't be able to revert this!",
+//     icon: "warning",
+//     showCancelButton: true,
+//     confirmButtonColor: "#3085d6",
+//     cancelButtonColor: "#d33",
+//     confirmButtonText: "Yes, delete it!",
+//   }).then((result) => {
+//     if (result.isConfirmed) {
+//       posts = posts.filter((post) => post.id !== postId);
+//       savePostsToStorage();
+//       renderPosts();
+//       Swal.fire("Deleted!", "Your post has been deleted.", "success");
+//     }
+//   });
+// }
 
 // Media
 // function previewMedia(input, type) {
@@ -654,7 +696,6 @@ function deletePost(postId) {
 //     previewMedia(this, "file");
 //   });
 // });
-
 
 // let posts = [];
 // let currentLocation = null;
