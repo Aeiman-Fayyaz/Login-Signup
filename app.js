@@ -78,7 +78,7 @@ signUpBtn &&
     }
     try {
       const loader = document.getElementById("loader");
-      loader.style.display = "block";
+      // loader.style.display = "block";
       const { data, error } = await client.auth.signUp({
         email: userSignupEmail.value,
         password: userSignupPassword.value,
