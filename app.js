@@ -83,7 +83,7 @@ signUpBtn &&
         email: userSignupEmail.value,
         password: userSignupPassword.value,
       });
-      loader.style.display = "none";
+      // loader.style.display = "none";
       console.log(data);
       if (error) throw error;
       Swal.fire({
@@ -96,7 +96,7 @@ signUpBtn &&
       console.log("Signup data:", data);
     } catch (error) {
       console.error("signp error:", error);
-      loader.style.display = "none";
+      // loader.style.display = "none";
       if (error.message.includes("invalid format")) {
         Swal.fire({
           icon: "error",
