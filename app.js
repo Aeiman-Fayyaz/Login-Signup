@@ -393,7 +393,7 @@ if (window.location.pathname == "/allBlogs.html") {
           <h6 class = "card-text">${description}</h5>
           </div>
           </div>`
-          )
+        )
           .join();
       } else {
         console.log(error);
