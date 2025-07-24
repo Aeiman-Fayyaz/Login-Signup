@@ -146,7 +146,7 @@ loginBtn &&
           email: userLoginEmail.value,
           password: userLoginPassword.value,
         });
-        loader.style.display = "none";
+        // loader.style.display = "none";
         if (error) throw error;
         if (data && data.user) window.location.href = "post.html";
         if (data && data.user) {
