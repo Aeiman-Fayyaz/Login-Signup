@@ -384,6 +384,7 @@ submitPost &&
 
 // Page redirection
 if (window.location.pathname == "/allBlogs.html") {
+  console.log("insideeeeeeeeeeeeeeeeeeee allblogs")
   const currentNavLink = document.getElementById("currentNavLink");
   currentNavLink.style.textDecoration = "underline red";
 
