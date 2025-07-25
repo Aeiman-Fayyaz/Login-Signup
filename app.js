@@ -183,18 +183,18 @@ loginBtn &&
 const inputPassword = document.getElementById("signupPassword");
 const loginPassword = document.getElementById("loginPassword");
 const togglePassword = document.getElementById("togglePassword");
-const togglePassword2 = document.getElementById("togglePassword2")
+const togglePassword2 = document.getElementById("togglePassword2");
 const eyeIcon = document.getElementById("eyeIcon");
 
 if (eyeIcon) {
   eyeIcon.addEventListener("click", (e) => {
-      e.preventDefault();
-      const type =
+    e.preventDefault();
+    const type =
       inputPassword.getAttribute("type") === "password" ? "text" : "password";
-      inputPassword.setAttribute("type", type);
-      eyeIcon.classList.toggle("fa-eye");
-      eyeIcon.classList.toggle("fa-eye-slash");
-    });
+    inputPassword.setAttribute("type", type);
+    eyeIcon.classList.toggle("fa-eye");
+    eyeIcon.classList.toggle("fa-eye-slash");
+  });
 }
 
 // Google OAuth
@@ -297,15 +297,15 @@ logoutBtn &&
 // Post Creation for database
 
 const submitPost = document.getElementById("submitPost");
-const loaderOverlay = document.getElementById("loaderOverlay");
+const loader = document.getElementById("loader");
 
-function showLoader() {
-  loaderOverlay.style.display = "flex";
-}
+// function showLoader() {
+//   loader.style.display = "flex";
+// }
 
-function hideLoader() {
-  loaderOverlay.style.display = "none";
-}
+// function hideLoader() {
+//   loader.style.display = "none";
+// }
 
 // Add post function
 submitPost &&
@@ -323,7 +323,7 @@ submitPost &&
       });
       return;
     }
-    showLoader();
+    // showLoader();
     submitPost.disabled = false;
     try {
       const {
@@ -338,8 +338,11 @@ submitPost &&
           user_id: user.id,
           description: userPostContent,
           title: userPostTitle,
+          user_name: userName,
         })
-        .select();
+        .select("* , user_name");
+      console.log(userName);
+
       console.log(data);
       if (error) {
         console.log(error);
@@ -371,7 +374,7 @@ submitPost &&
         confirmButtonColor: "#125b9a ",
       });
     } finally {
-      hideLoader();
+      // hideLoader();
       submitPost.disabled = false;
     }
   });
@@ -403,6 +406,7 @@ if (
               description,
             }) => `<div id = '${id}' class="card p-3 ms-5 col-lg-4 col-md-6 col-sm-12 mb-4" style="width: 18rem";
           <div classs="card-body">
+          
           <h5 class = "card-title text-black">${title}</h5>
           <h6 class = "card-text">${description}</h5>
           </div>
@@ -418,6 +422,65 @@ if (
     console.log(error);
   }
 }
+
+// // Try to show user
+// if (
+//   window.location.pathname == "/allBlogs.html" ||
+//   window.location.pathname == "/Login-Signup/allBlogs.html"
+// ) {
+//   const currentNavLink = document.getElementById("currentNavLink");
+//   currentNavLink.style.textDecoration = "underline red";
+
+//   try {
+//     // function for all all post
+//     const readAllBlogs = async () => {
+//       // data getting from post table
+//       const { data: posts, error: postError } = await client.from("post").select();
+//       console.log(posts);
+//       if (postError) throw postError;
+//       if (posts.length > 0) {
+//         console.log("First post user_name:", posts[0].user_name);
+//       }
+//       // Getting users for showing with blog
+//       const user_id = [...new Set(posts.map((posts) => posts.user_id))];
+//       const { data: users, error: usersError } = await client
+//         .from("post")
+//         .select("id")
+//         .in("id", user_id , userName);
+//       if (usersError) throw usersError;
+
+//       // Making new array for user details by using reduce
+//       const userArr = users.reduce((map, user) => {
+//         map[user.uid] = user;
+//         return map;
+//       }, {});
+
+//       const postBox = document.getElementById("allBlogContainer");
+//       // Set data in box title description
+//       postBox.innerHTML = posts
+//         .map(({ id, title, description, user_id , user_name }) => {
+//           const author = userArr[user_id, user_name] || {};
+//           return `<div id='${id}' class="card p-3 ms-5 col-lg-4 col-md-6 col-sm-12 mb-4" style="width: 18rem">
+//             <div class="card-body">
+//               <div class="d-flex align-items-center mb-2">
+//                 ${author.picture ?
+//                   `<img src="${author.picture}" class="rounded-circle me-2" width="40" height="40" alt="Profile">` :
+//                   `<div class="rounded-circle me-2 bg-secondary" style="width: 40px; height: 40px"></div>`}
+//                 <span class="fw-bold">${author.name || 'Unknown Author'}</span>
+//               </div>
+//               <h4>${user_name}</h4>
+//               <h5 class="card-title text-black">${title}</h5>
+//               <h6 class="card-text">${description}</h6>
+//             </div>
+//           </div>`;
+//         })
+//         .join("");
+//     };
+//     readAllBlogs();
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
 // My Blogs showing
 

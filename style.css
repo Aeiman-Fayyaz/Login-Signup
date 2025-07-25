@@ -33,6 +33,10 @@ body {
     border-radius: 10px !important;
 }
 
+.blogsContainer{
+    background-image: none !important;
+    background-color: burlywood;
+}
 label {
     display: block;
     margin-bottom: 8px;
