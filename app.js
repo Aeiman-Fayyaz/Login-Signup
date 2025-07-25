@@ -202,7 +202,7 @@ if (googleBtn) {
     try {
       const redirectTo = window.location.hostname === "127.0.0.1" ?
       window.location.origin + "/post.html"
-      : window.location.origin + "https://aeiman-fayyaz.github.io/Login-Signup/post.html";
+      : window.location.origin + "/Login-Signup/post.html";
       const { data, error } = await client.auth.signInWithOAuth({
         provider: "google",
         options: {
@@ -233,7 +233,7 @@ if (githubBtn) {
       // Sign in with GitHub
       const redirectTo = window.location.hostname === "127.0.0.1" ?
       window.location.origin + "/post.html"
-      : window.location.origin + "https://aeiman-fayyaz.github.io/Login-Signup/post.html";
+      : window.location.origin + "/Login-Signup/post.html";
       const { data, error } = await client.auth.signInWithOAuth({
         provider: "github",
         options: {
