@@ -189,12 +189,14 @@ loginBtn &&
 // Password hide / Show
 
 const inputPassword = document.getElementById("signupPassword");
+const loginPassword = document.getElementById("loginPassword");
 const togglePassword = document.getElementById("togglePassword");
 const eyeIcon = document.getElementById("eyeIcon");
 
-if (togglePassword && inputPassword && eyeIcon) {
+if (togglePassword && inputPassword && loginPassword && eyeIcon) {
   togglePassword &&
-    togglePassword.addEventListener("click", () => {
+    togglePassword.addEventListener("click", (e) => {
+      e.preventDefault()
       const type =
         inputPassword.getAttribute("type") === "password" ? "text" : "password";
       inputPassword.setAttribute("type", type);
