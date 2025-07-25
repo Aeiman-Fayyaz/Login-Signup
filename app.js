@@ -383,42 +383,42 @@ submitPost &&
 // All Blogs showing
 
 // Page redirection
-if (window.location.pathname == "/allBlogs.html") {
-  console.log("insideeeeeeeeeeeeeeeeeeee allblogs")
-  const currentNavLink = document.getElementById("currentNavLink");
-  currentNavLink.style.textDecoration = "underline red";
+if (window.location.pathname == '/allBlogs.html' || window.location.pathname == '/Login-Signup/allBlogs.html') {
+	console.log('insideeeeeeeeeeeeeeeeeeee allblogs');
+	const currentNavLink = document.getElementById('currentNavLink');
+	currentNavLink.style.textDecoration = 'underline red';
 
-  try {
-    // function for all all post
-    const readAllBlogs = async () => {
-      // data getting from post table
-      const { data, error } = await client.from("post").select();
-      console.log(data)
-      if (data) {
-        const postBox = document.getElementById("allBlogContainer");
-        // Set data in box title description
-        postBox.innerHTML = data
-          .map(
-            ({
-              id,
-              title,
-              description,
-            }) => `<div id = '${id}' class="card p-3 ms-5 col-lg-4 col-md-6 col-sm-12 mb-4" style="width: 18rem";
+	try {
+		// function for all all post
+		const readAllBlogs = async () => {
+			// data getting from post table
+			const { data, error } = await client.from('post').select();
+			console.log(data);
+			if (data) {
+				const postBox = document.getElementById('allBlogContainer');
+				// Set data in box title description
+				postBox.innerHTML = data
+					.map(
+						({
+							id,
+							title,
+							description,
+						}) => `<div id = '${id}' class="card p-3 ms-5 col-lg-4 col-md-6 col-sm-12 mb-4" style="width: 18rem";
           <div classs="card-body">
           <h5 class = "card-title text-black">${title}</h5>
           <h6 class = "card-text">${description}</h5>
           </div>
-          </div>`
-        )
-          .join();
-      } else {
-        console.log(error);
-      }
-    };
-    readAllBlogs();
-  } catch (error) {
-    console.log(error);
-  }
+          </div>`,
+					)
+					.join();
+			} else {
+				console.log(error);
+			}
+		};
+		readAllBlogs();
+	} catch (error) {
+		console.log(error);
+	}
 }
 
 // My Blogs showing
