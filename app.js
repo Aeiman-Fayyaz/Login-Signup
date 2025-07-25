@@ -14,12 +14,6 @@ client.auth.onAuthStateChange((event) => {
 });
 
 
-console.log("hello");
-console.log("hello");
-console.log("hello");
-console.log("hello");
-console.log("hello");
-console.log("hello");
 
 // Display a user
 async function userDisplay() {
