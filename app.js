@@ -384,6 +384,7 @@ if (window.location.pathname == "/allBlogs.html") {
     const readAllBlogs = async () => {
       // data getting from post table
       const { data, error } = await client.from("post").select();
+      console.log(data)
       if (data) {
         const postBox = document.getElementById("allBlogContainer");
         // Set data in box title description
