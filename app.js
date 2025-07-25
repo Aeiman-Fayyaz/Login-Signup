@@ -200,10 +200,13 @@ const googleBtn = document.getElementById("google-btn");
 if (googleBtn) {
   googleBtn.addEventListener("click", async () => {
     try {
+      const redirectTo = window.location.hostname === "127.0.0.1" ?
+      window.location.origin + "/post.html"
+      : window.location.origin + "https://github.com/Aeiman-Fayyaz/Login-Signup";
       const { data, error } = await client.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: window.location.origin + "/post.html",
+          redirectTo: redirectTo,
           queryParams: {
             access_type: "offline",
             prompt: "consent",
@@ -231,7 +234,7 @@ if (githubBtn) {
       const { data, error } = await client.auth.signInWithOAuth({
         provider: "github",
         options: {
-          redirectTo: window.location.origin + "/post.html",
+          redirectTo: redirectTo ,
           queryParams: {
             access_type: "offline",
             prompt: "consent",
