@@ -459,14 +459,14 @@ const readMyPosts = async () => {
   }
 };
 // Page location redirection
-if (window.location.pathname == "/myBlogs.html" ||  window.location.pathname == '/Login-Signup/myBlogs.html') {
-  const current = document.getElementById("current");
-  current.style.textDecoration = "underline red";
-  try {
-    readMyPosts();
-  } catch (error) {
-    console.log(error);
-  }
+if (window.location.pathname == '/myBlogs.html' || window.location.pathname == '/Login-Signup/myBlogs.html') {
+	const current = document.getElementById('current');
+	current.style.textDecoration = 'underline red';
+	try {
+		readMyPosts();
+	} catch (error) {
+		console.log(error);
+	}
 }
 
 // Post Update for Database Supabase
