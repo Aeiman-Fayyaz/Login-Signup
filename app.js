@@ -13,8 +13,6 @@ client.auth.onAuthStateChange((event) => {
   }
 });
 
-
-
 // Display a user
 async function userDisplay() {
   try {
@@ -185,14 +183,14 @@ loginBtn &&
 const inputPassword = document.getElementById("signupPassword");
 const loginPassword = document.getElementById("loginPassword");
 const togglePassword = document.getElementById("togglePassword");
+const togglePassword2 = document.getElementById("togglePassword2")
 const eyeIcon = document.getElementById("eyeIcon");
 
-if (togglePassword && inputPassword && loginPassword && eyeIcon) {
-  togglePassword &&
-    togglePassword.addEventListener("click", (e) => {
-      e.preventDefault()
+if (eyeIcon) {
+  eyeIcon.addEventListener("click", (e) => {
+      e.preventDefault();
       const type =
-        inputPassword.getAttribute("type") === "password" ? "text" : "password";
+      inputPassword.getAttribute("type") === "password" ? "text" : "password";
       inputPassword.setAttribute("type", type);
       eyeIcon.classList.toggle("fa-eye");
       eyeIcon.classList.toggle("fa-eye-slash");
@@ -204,9 +202,10 @@ const googleBtn = document.getElementById("google-btn");
 if (googleBtn) {
   googleBtn.addEventListener("click", async () => {
     try {
-      const redirectTo = window.location.hostname === "127.0.0.1" ?
-      window.location.origin + "/post.html"
-      : window.location.origin + "/Login-Signup/post.html";
+      const redirectTo =
+        window.location.hostname === "127.0.0.1"
+          ? window.location.origin + "/post.html"
+          : window.location.origin + "/Login-Signup/post.html";
       const { data, error } = await client.auth.signInWithOAuth({
         provider: "google",
         options: {
@@ -235,13 +234,14 @@ if (githubBtn) {
   githubBtn.addEventListener("click", async function signInWithGithub() {
     try {
       // Sign in with GitHub
-      const redirectTo = window.location.hostname === "127.0.0.1" ?
-      window.location.origin + "/post.html"
-      : window.location.origin + "/Login-Signup/post.html";
+      const redirectTo =
+        window.location.hostname === "127.0.0.1"
+          ? window.location.origin + "/post.html"
+          : window.location.origin + "/Login-Signup/post.html";
       const { data, error } = await client.auth.signInWithOAuth({
         provider: "github",
         options: {
-          redirectTo: redirectTo ,
+          redirectTo: redirectTo,
           queryParams: {
             access_type: "offline",
             prompt: "consent",
@@ -379,41 +379,44 @@ submitPost &&
 // All Blogs showing
 
 // Page redirection
-if (window.location.pathname == '/allBlogs.html' || window.location.pathname == '/Login-Signup/allBlogs.html') {
-	const currentNavLink = document.getElementById('currentNavLink');
-	currentNavLink.style.textDecoration = 'underline red';
+if (
+  window.location.pathname == "/allBlogs.html" ||
+  window.location.pathname == "/Login-Signup/allBlogs.html"
+) {
+  const currentNavLink = document.getElementById("currentNavLink");
+  currentNavLink.style.textDecoration = "underline red";
 
-	try {
-		// function for all all post
-		const readAllBlogs = async () => {
-			// data getting from post table
-			const { data, error } = await client.from('post').select();
-			console.log(data);
-			if (data) {
-				const postBox = document.getElementById('allBlogContainer');
-				// Set data in box title description
-				postBox.innerHTML = data
-					.map(
-						({
-							id,
-							title,
-							description,
-						}) => `<div id = '${id}' class="card p-3 ms-5 col-lg-4 col-md-6 col-sm-12 mb-4" style="width: 18rem";
+  try {
+    // function for all all post
+    const readAllBlogs = async () => {
+      // data getting from post table
+      const { data, error } = await client.from("post").select();
+      console.log(data);
+      if (data) {
+        const postBox = document.getElementById("allBlogContainer");
+        // Set data in box title description
+        postBox.innerHTML = data
+          .map(
+            ({
+              id,
+              title,
+              description,
+            }) => `<div id = '${id}' class="card p-3 ms-5 col-lg-4 col-md-6 col-sm-12 mb-4" style="width: 18rem";
           <div classs="card-body">
           <h5 class = "card-title text-black">${title}</h5>
           <h6 class = "card-text">${description}</h5>
           </div>
-          </div>`,
-					)
-					.join();
-			} else {
-				console.log(error);
-			}
-		};
-		readAllBlogs();
-	} catch (error) {
-		console.log(error);
-	}
+          </div>`
+          )
+          .join();
+      } else {
+        console.log(error);
+      }
+    };
+    readAllBlogs();
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 // My Blogs showing
@@ -455,14 +458,17 @@ const readMyPosts = async () => {
   }
 };
 // Page location redirection
-if (window.location.pathname == '/myBlogs.html' || window.location.pathname == '/Login-Signup/myBlogs.html') {
-	const current = document.getElementById('current');
-	current.style.textDecoration = 'underline red';
-	try {
-		readMyPosts();
-	} catch (error) {
-		console.log(error);
-	}
+if (
+  window.location.pathname == "/myBlogs.html" ||
+  window.location.pathname == "/Login-Signup/myBlogs.html"
+) {
+  const current = document.getElementById("current");
+  current.style.textDecoration = "underline red";
+  try {
+    readMyPosts();
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 // Post Update for Database Supabase
@@ -512,7 +518,7 @@ const updatePost = async (id, userPostTitle, userPostContent) => {
 
 // Post Delete for Database Supabase
 
-const deletePost = async(id) =>{
+const deletePost = async (id) => {
   const swalWithBootstrapButtons = Swal.mixin({
     customClass: {
       confirmButton: "btn-success",
@@ -549,7 +555,7 @@ const deletePost = async(id) =>{
         console.log(error);
       }
     });
-}
+};
 
 // OLD POST APP CODE
 
