@@ -188,7 +188,8 @@ const eyeIcon = document.getElementById("eyeIcon");
 
 if (togglePassword && inputPassword && eyeIcon) {
   togglePassword &&
-    togglePassword.addEventListener("click", () => {
+    togglePassword.addEventListener("click", (e) => {
+      e.preventDefault()
       const type =
         inputPassword.getAttribute("type") === "password" ? "text" : "password";
       inputPassword.setAttribute("type", type);
