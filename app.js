@@ -384,7 +384,6 @@ submitPost &&
 
 // Page redirection
 if (window.location.pathname == '/allBlogs.html' || window.location.pathname == '/Login-Signup/allBlogs.html') {
-	console.log('insideeeeeeeeeeeeeeeeeeee allblogs');
 	const currentNavLink = document.getElementById('currentNavLink');
 	currentNavLink.style.textDecoration = 'underline red';
 
@@ -460,7 +459,7 @@ const readMyPosts = async () => {
   }
 };
 // Page location redirection
-if (window.location.pathname == "/myBlogs.html") {
+if (window.location.pathname == "/myBlogs.html" ||  window.location.pathname == '/Login-Signup/myBlogs.html') {
   const current = document.getElementById("current");
   current.style.textDecoration = "underline red";
   try {
