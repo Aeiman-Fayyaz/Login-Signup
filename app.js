@@ -342,7 +342,6 @@ submitPost &&
         })
         .select("* , user_name");
       console.log(userName);
-
       console.log(data);
       if (error) {
         console.log(error);
@@ -382,48 +381,6 @@ submitPost &&
 // All Blogs showing
 
 // Page redirection
-if (
-  window.location.pathname == "/allBlogs.html" ||
-  window.location.pathname == "/Login-Signup/allBlogs.html"
-) {
-  const currentNavLink = document.getElementById("currentNavLink");
-  currentNavLink.style.textDecoration = "underline red";
-
-  try {
-    // function for all all post
-    const readAllBlogs = async () => {
-      // data getting from post table
-      const { data, error } = await client.from("post").select();
-      console.log(data);
-      if (data) {
-        const postBox = document.getElementById("allBlogContainer");
-        // Set data in box title description
-        postBox.innerHTML = data
-          .map(
-            ({
-              id,
-              title,
-              description,
-            }) => `<div id = '${id}' class="card p-3 ms-5 col-lg-4 col-md-6 col-sm-12 mb-4" style="width: 18rem";
-          <div classs="card-body">
-          
-          <h5 class = "card-title text-black">${title}</h5>
-          <h6 class = "card-text">${description}</h5>
-          </div>
-          </div>`
-          )
-          .join();
-      } else {
-        console.log(error);
-      }
-    };
-    readAllBlogs();
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-// // Try to show user
 // if (
 //   window.location.pathname == "/allBlogs.html" ||
 //   window.location.pathname == "/Login-Signup/allBlogs.html"
@@ -435,29 +392,71 @@ if (
 //     // function for all all post
 //     const readAllBlogs = async () => {
 //       // data getting from post table
-//       const { data: posts, error: postError } = await client.from("post").select();
-//       console.log(posts);
-//       if (postError) throw postError;
-//       if (posts.length > 0) {
-//         console.log("First post user_name:", posts[0].user_name);
+//       const { data, error } = await client.from("post").select();
+//       console.log(data);
+//       if (data) {
+//         const postBox = document.getElementById("allBlogContainer");
+//         // Set data in box title description
+//         postBox.innerHTML = data
+//           .map(
+//             ({
+//               id,
+//               title,
+//               description,
+//             }) => `<div id = '${id}' class="card p-3 ms-5 col-lg-4 col-md-6 col-sm-12 mb-4" style="width: 18rem";
+//           <div classs="card-body">
+          
+//           <h5 class = "card-title text-black">${title}</h5>
+//           <h6 class = "card-text">${description}</h5>
+//           </div>
+//           </div>`
+//           )
+//           .join();
+//       } else {
+//         console.log(error);
 //       }
-//       // Getting users for showing with blog
-//       const user_id = [...new Set(posts.map((posts) => posts.user_id))];
+//     };
+//     readAllBlogs();
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
+
+// // Try to show user
+// if (
+//   window.location.pathname == "/allBlogs.html" ||
+//   window.location.pathname == "/Login-Signup/allBlogs.html"
+// ) {
+//   const currentNavLink = document.getElementById("currentNavLink");
+//   currentNavLink.style.textDecoration = "underline red";
+
+//   try {
+// //     // function for all all post
+//     const readAllBlogs = async () => {
+// //       // data getting from post table
+//       const { data: post, error: postError } = await client.from("post").select();
+//       console.log(post);
+//       if (postError) throw postError;
+//       if (post.length > 0) {
+//         console.log("First post user_name:", post[0].user_name);
+//       }
+// //       // Getting users for showing with blog
+//       const user_id = [...new Set(post.map((post) => post.user_id))];
 //       const { data: users, error: usersError } = await client
 //         .from("post")
 //         .select("id")
 //         .in("id", user_id , userName);
 //       if (usersError) throw usersError;
 
-//       // Making new array for user details by using reduce
+// //       // Making new array for user details by using reduce
 //       const userArr = users.reduce((map, user) => {
 //         map[user.uid] = user;
 //         return map;
 //       }, {});
 
 //       const postBox = document.getElementById("allBlogContainer");
-//       // Set data in box title description
-//       postBox.innerHTML = posts
+// //       // Set data in box title description
+//       postBox.innerHTML = post
 //         .map(({ id, title, description, user_id , user_name }) => {
 //           const author = userArr[user_id, user_name] || {};
 //           return `<div id='${id}' class="card p-3 ms-5 col-lg-4 col-md-6 col-sm-12 mb-4" style="width: 18rem">
@@ -481,6 +480,70 @@ if (
 //     console.log(error);
 //   }
 // }
+if (
+  window.location.pathname == "/allBlogs.html" ||
+  window.location.pathname == "/Login-Signup/allBlogs.html"
+){
+  const readAllBlogs = async () => {
+   try {
+   const { data: post, error: postError } = await client.from("post").select("*");
+   console.log("Posts data:", post);
+   if (postError) throw postError;
+if (post.length> 0) {
+  console.log("First post's user relation:", post[0].user_name);
+}
+   const postBox = document.getElementById("allBlogContainer");
+   postBox.innerHTML = post
+   .map(({ id, title, description, user_name }) => {
+   return `
+   <div id='${id}' class="card p-3 ms-5 col-lg-4 col-md-6 col-sm-12 mb-4" style="width: 18rem">
+   <div class="card-body">
+   <div class="d-flex align-items-center mb-2">
+   <div class="rounded-circle me-2 bg-secondary" style="width: 40px; height: 40px"></div>
+   <span class="fw-bold">${user_name?.name?.full_name || "Unknown Author"}</span>
+   </div>
+   <h5 class="card-title text-black">${title}</h5>
+   <h6 class="card-text">${description}</h6>
+   </div>
+   </div>`;
+   })
+   .join("");
+   } catch (error) {
+   console.log("Error aaya:", error.message);
+   }
+  };
+  readAllBlogs();
+}
+// Call the function
+// )try {
+//  const readAllBlogs = async () => {
+//  const { data: post, error: postError } = await client.from("post").select();
+//  if (postError) throw postError;
+
+//  const postBox = document.getElementById("allBlogContainer");
+//  postBox.innerHTML = post
+//  .map(({ id, title, description, user_name }) => {
+//  return `
+//  <div id='${id}' class="card p-3 ms-5 col-lg-4 col-md-6 col-sm-12 mb-4" style="width: 18rem">
+//  <div class="card-body">
+//  <div class="d-flex align-items-center mb-2">
+//  <div class="rounded-circle me-2 bg-secondary" style="width: 40px; height: 40px"></div>
+//  <span class="fw-bold">${user_name || "Unknown Author"}</span>
+//  </div>
+//  <h4>${user_name}</h4>
+//  <h5 class="card-title text-black">${title}</h5>
+//  <h6 class="card-text">${description}</h6>
+//  </div>
+//  </div>`;
+//  })
+//  .join("");
+//  };
+
+//  readAllBlogs();
+// } catch (error) {
+//  console.log("Error aaya:", error);
+// }
+
 
 // My Blogs showing
 
@@ -498,6 +561,7 @@ const readMyPosts = async () => {
   if (data) {
     const readMyPost = document.getElementById("myBlogContainer");
     console.log(readMyPost);
+  
     readMyPost.innerHTML = data
       .map(
         ({
