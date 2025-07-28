@@ -27,7 +27,7 @@
             <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link text-white fw-bolder" href="post.html">Home</a>
+                        <a class="nav-link text-danger fw-bolder" href="post.html">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-white fw-bolder" id="currentNavLink" href="allBlogs.html">All Blogs</a>
@@ -71,37 +71,6 @@
                         <textarea class="form-control" id="postContent" rows="3" placeholder="What's on your mind?"
                             required></textarea>
                     </div>
-
-                    <!-- Media Upload Buttons -->
-                    <div class="mb-3 d-flex flex-wrap gap-2 pt-3">
-                        <button type="button" class="btn btn-sm"
-                            onclick="document.getElementById('imageUpload').click()">
-                            <i class="bi bi-image"></i> Image
-                        </button>
-                        <input type="file" id="imageUpload" accept="image/*" style="display: none;"
-                            onchange="previewMedia(this, 'image')">
-
-                        <button type="button" class="btn btn-sm"
-                            onclick="document.getElementById('videoUpload').click()">
-                            <i class="bi bi-film"></i> Video
-                        </button>
-                        <input type="file" id="videoUpload" accept="video/*" style="display: none;"
-                            onchange="previewMedia(this, 'video')">
-
-                        <button type="button" class="btn btn-sm"
-                            onclick="document.getElementById('fileUpload').click()">
-                            <i class="bi bi-file-earmark"></i> Document
-                        </button>
-                        <input type="file" id="fileUpload" accept=".pdf,.doc,.docx,.xls,.xlsx" style="display: none;"
-                            onchange="previewMedia(this, 'file')">
-                        <button type="button" class="btn btn-sm" onclick="getLocation()">
-                            <i class="bi bi-geo-alt"></i> Check In
-                        </button>
-                    </div>
-
-                    <!-- Media Preview -->
-                    <div id="mediaPreview" class="mb-3"></div>
-                    <div id="locationPreview" class="mb-3"></div>
 
                     <button type="button" class="btn" id="submitPost">Post</button>
                 </form>
