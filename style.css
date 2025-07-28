@@ -1,7 +1,7 @@
 :root {
-    --primary-color: #4a6bff;
-    --secondary-color: #f5f7ff;
-    --text-color: #333;
+    --primary-color: #3A0519;
+    --secondary-color: #A53860;
+    --text-color: #e0e0e0;
     --light-gray: #e0e0e0;
     --error-color: #ff4a4a;
 }
@@ -11,21 +11,19 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Lucida Sans', sans-serif;
+
 }
 
 
 body {
     width: 100%;
     height: 100vh;
-    background-image: url(img3.avif);
-    background-repeat: no-repeat;
-    background-size: cover;
-    line-height: 1.6;
+    background-color: var(--primary-color) !important;
+    /* line-height: 1.6; */
 }
 
 .homeContainer {
     margin: 0 auto !important;
-    margin-top: 20px !important;
     width: 100% !important;
     max-width: 500px !important;
     text-align: center !important;
@@ -33,10 +31,11 @@ body {
     border-radius: 10px !important;
 }
 
-.blogsContainer{
+.blogsContainer {
     background-image: none !important;
     background-color: burlywood;
 }
+
 label {
     display: block;
     margin-bottom: 8px;
@@ -74,19 +73,30 @@ select:focus {
 
 .btn {
     width: 100%;
-    background: linear-gradient(to left,
-            rgba(119, 50, 119, 0.795),
-            rgba(0, 255, 255, 0.425));
-    color: white !important;
+    background: var(--secondary-color) !important;
+    color: var(--text-color) !important;
     border: none !important;
     border-radius: 5px;
     font-size: 20px !important;
     cursor: pointer;
 }
 
+.login-btn {
+    width: 100%;
+    height: 40px !important;
+    background: var(--light-gray) !important;
+    color: var(--primary-color) !important;
+    border: none !important;
+    border-radius: 5px;
+    font-size: 16px !important;
+    cursor: pointer;
+}
+.img-btn{
+    height: 20px;
+}
 .login-link {
     text-align: center;
-    margin-top: 20px;
+    margin: 20px ;
     font-size: 14px;
 }
 

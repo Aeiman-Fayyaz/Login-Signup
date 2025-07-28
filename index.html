@@ -15,7 +15,7 @@
 
 <body>
     <!-- Signup or Create account -->
-    <div class="homeContainer">
+    <div class="homeContainer pt-4">
         <h1>Create Account</h1>
         <h5>OR</h5>
         <h1>Sign up</h1>
@@ -35,20 +35,23 @@
                 <div class="button text-uppercase">
                     <button class="btn text-uppercase fw-bolder" type="button" id="SignupBtn">Sign up</button>
                 </div>
-                <div class="login-link" class="mb-0">
-                    <p class="fs-6">Already have an account? </p>
-                    <!-- <div id="signupLoader" class="loader hidden"></div> -->
-                    <a href="./login.html" class="text-decoration-none fs-6">Log in</a>
+                <div class="login-link text-light" class="">
+                    Already have an account? 
+                    <a href="./login.html" class="text-decoration-none text-light ">Log in</a>
                 </div>
                 <div class="main">
                     <div id="mainLoader" class="loader"></div>
                 </div>
-                <div class="button">
-                    <button type="button" class="btn w-25 h-25 fw-bolder" id="google-btn">
-                        <img src="./Images/google_logo.png" class="w-25 h-25" alt="">
+                <div class="button mt-0 mb-0">
+                    <button type="button" class="login-btn" id="google-btn">
+                        <img src="./Images/google_logo.png" class="img-btn" alt="">
+                        Login with Google
                     </button>
-                    <button class="btn w-25 h-25 fw-bolder ms-3" type="button" id="github-btn">
-                        <img src="./Images/github-logo.png" class="w-25 h-25" alt="">
+                </div>
+                <div class="button mt-3 mb-0">
+                    <button class="login-btn " type="button" id="github-btn">
+                        <img src="./Images/github-logo.png" class="img-btn" alt="">
+                        Login with GitHub
                     </button>
                 </div>
             </form>
